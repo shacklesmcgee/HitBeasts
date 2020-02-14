@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CombatManager : MonoBehaviour
 {
-    DummyScript activePlayer;
-    DummyScript waitingPlayer;
+    Character activePlayer;
+    Character waitingPlayer;
 
     //Alternativly, if they have to bet the same amount then we only need one variable to hold the total bet
     int player1PointBet;
@@ -15,7 +15,7 @@ public class CombatManager : MonoBehaviour
     {
         ATTACK,
         HEAL,
-        ITEM, //could also be special
+        SPECIAL,//could also be special
         DEFEND, //if we want it
         RUN
     }
@@ -32,13 +32,13 @@ public class CombatManager : MonoBehaviour
         int first = Random.Range(0, 1);
         if(first == 0)
         {
-            activePlayer = GameObject.Find("Player1").GetComponent<DummyScript>();
-            waitingPlayer = GameObject.Find("Player2").GetComponent<DummyScript>();
+            activePlayer = GameObject.Find("Player1").GetComponent<Character>();
+            waitingPlayer = GameObject.Find("Player2").GetComponent<Character>();
         }
         else
         {
-            activePlayer = GameObject.Find("Player2").GetComponent<DummyScript>();
-            waitingPlayer = GameObject.Find("Player1").GetComponent<DummyScript>();
+            activePlayer = GameObject.Find("Player2").GetComponent<Character>();
+            waitingPlayer = GameObject.Find("Player1").GetComponent<Character>();
         }
     }
 
@@ -53,12 +53,18 @@ public class CombatManager : MonoBehaviour
             {
                 case playerAction.ATTACK:
                     (int, int) damageRange = activePlayer.getAttack();
-                    waitingPlayer.modifyHealth(Random.Range(damageRange.Item1, damageRange.Item2) - waitingPlayer.getDefence(), true);
+                    int attack = Random.Range(damageRange.Item1, damageRange.Item2);
+
+                    (int, int) defenceRange = activePlayer.getDefence();
+                    int defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
+
+                    waitingPlayer.modifyHealth(attack - defence, true);
                     break;
+
                 case playerAction.HEAL:
                     activePlayer.modifyHealth(activePlayer.getHeal(), false);
                     break;
-                case playerAction.ITEM:
+                case playerAction.SPECIAL:
                     //do something
                     break;
                 case playerAction.DEFEND:
@@ -67,7 +73,34 @@ public class CombatManager : MonoBehaviour
                 case playerAction.RUN:
                     //random chance to escape fight, lose half of bet points
                     break;
+
+          
             }
         }
+    }
+
+    public void AttackEnemy()
+    {
+        currentplayerAction = playerAction.ATTACK;
+    }
+
+    public void HealPlayer()
+    {
+        currentplayerAction = playerAction.HEAL;
+    }
+
+    public void Defend()
+    {
+        currentplayerAction = playerAction.DEFEND;
+    }
+
+    public void SpecialMove()
+    {
+        currentplayerAction = playerAction.SPECIAL;
+    }
+
+    public void Run()
+    {
+        currentplayerAction = playerAction.RUN;
     }
 }
