@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-
-    private int health = 100;
+    private string characterName = "blank";
+    private int maxHealth = 100;
+    private int currentHealth = 100;
     private int defenceLower = 12;
     private int defenceUpper = 14;
     private int attackLower = 15;
@@ -15,29 +16,56 @@ public class Character : MonoBehaviour
     private int heal = 20;
     private int luck = 17;
 
-    private int points = 3;
+    private int attackLvl = 0;
+    private int defenceLvl = 0;
+    private int maxHealthLvl = 0;
+    private int specialLvl = 0;
+    private int luckLvl = 0;
 
-    public int getHealth()
+    private int points = 3;
+    private int betPoints = 0;
+
+    public string getCharacterName()
     {
-        return health;
+        return characterName;
     }
 
-    public void setHealth(int change)
+    public void setCharacterName(string newName)
     {
-        health = health + change;
+        characterName = newName;
+    }
+
+    public int getMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int change)
+    {
+        maxHealth += change;
+
+        points -= change;
+    }
+
+    public int getCurrentHealth()
+    {
+        return currentHealth;
     }
 
     //Used for both damaging the player and healing the player
-    public void modifyHealth(int healthChange, bool isDamage)
+    public void setCurrentHealth(int change, bool damage)
     {
-        if(isDamage == true)
+        if (damage)
         {
-            health -= healthChange;
+            currentHealth -= change;
         }
+
         else
         {
-            health += healthChange;
+            currentHealth += change;
         }
+
+        print(this.characterName + " : " + currentHealth);
     }
 
     //returns first the lowest possible attack value, then the highest
@@ -48,8 +76,10 @@ public class Character : MonoBehaviour
 
     public void setDefence(int change)
     {
-        defenceLower = defenceLower + change;
-        defenceUpper = defenceUpper + change;
+        defenceLower += change;
+        defenceUpper += change;
+
+        points -= change;
 
     }
     //returns first the lowest possible attack value, then the highest
@@ -60,8 +90,10 @@ public class Character : MonoBehaviour
 
     public void setAttack(int change)
     {
-        attackLower = attackLower + change;
-        attackUpper = attackUpper + change;
+        attackLower += change;
+        attackUpper += change;
+
+        points -= change;
     }
 
     //returns first the lowest possible attack value, then the highest
@@ -72,8 +104,10 @@ public class Character : MonoBehaviour
 
     public void setSpecial(int change)
     {
-        specialLower = specialLower + change;
-        specialUpper = specialUpper + change;
+        specialLower += change;
+        specialUpper += change;
+
+        points -= change;
     }
 
     public int getHeal()
@@ -83,7 +117,9 @@ public class Character : MonoBehaviour
 
     public void setHeal(int change)
     {
-        heal = heal + change;
+        heal += change;
+
+        points -= change;
     }
 
     public int getLuck()
@@ -93,20 +129,79 @@ public class Character : MonoBehaviour
 
     public void setLuck(int change)
     {
-        luck = luck + change;
+        luck += change;
+
+        points -= change;
     }
 
-    public void changePoints(int pointChange, bool wonGame, bool betting)
+    public int getAttackLvl()
     {
-        if(wonGame || betting)
-        {
-            points += pointChange;
-        }
+        return attackLvl;
+    }
 
-        else
-        {
-            points -= pointChange;
-        }
+    public void setAttackLvl(int change)
+    {
+        attackLvl += change;
+    }
+
+    public int getDefenceLvl()
+    {
+        return defenceLvl;
+    }
+
+    public void setDefenceLvl(int change)
+    {
+        defenceLvl += change;
+    }
+
+    public int getMaxHealthLvl()
+    {
+        return maxHealthLvl;
+    }
+
+    public void setMaxHealthLvl(int change)
+    {
+        maxHealthLvl += change;
+    }
+
+    public int getSpecialLvl()
+    {
+        return specialLvl;
+    }
+
+    public void setSpecialLvl(int change)
+    {
+        specialLvl += change;
+    }
+
+    public int getLuckLvl()
+    {
+        return luckLvl;
+    }
+
+    public void setLuckLvl(int change)
+    {
+        luckLvl += change;
+    }
+
+    public int getPoints()
+    {
+        return points;
+    }
+
+    public void setPoints(int change)
+    {
+        points += change;
+    }
+
+    public int getBetPoints()
+    {
+        return betPoints;
+    }
+
+    public void setBetPoints(int change)
+    {
+        betPoints += change;
     }
 
 }
