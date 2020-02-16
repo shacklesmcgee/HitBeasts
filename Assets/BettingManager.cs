@@ -26,18 +26,10 @@ public class BettingManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
-        player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
-        currentPlayer = player1;
-
         btnBetUp.onClick.AddListener(delegate { ChangeBet(1); });
         btnBetDown.onClick.AddListener(delegate { ChangeBet(-1); });
         btnConfirmBet.onClick.AddListener(delegate { ConfirmBet(); });
         btnStartGame.onClick.AddListener(delegate { this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BATTLE); });
-
-        ResetCanvas();
-
-        btnStartGame.interactable = false;
     }
 
     // Update is called once per frame
@@ -52,19 +44,24 @@ public class BettingManager : MonoBehaviour
             (change < 0 && currentPlayer.getBetPoints() > 0))
         {
             currentPlayer.setBetPoints(change);
-            currentPlayer.setPoints(-change);
 
-            txtPlayer1Bet.text = "PLAYER 1 BETS : " + player1.getBetPoints();
-            txtPlayer2Bet.text = "PLAYER 2 BETS : " + player2.getBetPoints();
+            UpdateText();
+        }
 
-            txtPoints.text = "SKILL POINTS : " + currentPlayer.getPoints();
-            txtBetPoints.text = "# OF SKILL POINTS TO BET : " + currentPlayer.getBetPoints();
+        if (player1.getBetPoints() == player2.getBetPoints())
+        {
+            btnStartGame.interactable = true;
+        }
+
+        else
+        {
+            btnStartGame.interactable = false;
         }
     }
 
     public void ConfirmBet()
     {
-        
+        currentPlayer.setPoints(-currentPlayer.getBetPoints());
 
         if (currentPlayer == player1)
         {
@@ -75,17 +72,32 @@ public class BettingManager : MonoBehaviour
             currentPlayer = player1;
         }
 
-        btnConfirmBet.GetComponentInChildren<Text>().text = currentPlayer.getCharacterName() + " CONFIRM YOUR BET";
+        UpdateText();
 
         if (player1.getBetPoints() == player2.getBetPoints())
         {
             btnStartGame.interactable = true;
         }
+
+        else
+        {
+            btnStartGame.interactable = false;
+        }
     }
 
-    public void ResetCanvas()
+    public void ShowScreen()
     {
+        player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
+        player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
+        currentPlayer = player1;
 
+        UpdateText();
+
+        btnStartGame.interactable = false;
+    }
+
+    void UpdateText()
+    {
         txtNames.text = "PLACE YOUR BETS " + currentPlayer.getCharacterName();
         txtPoints.text = "SKILL POINTS : " + currentPlayer.getPoints();
         txtBetPoints.text = "# OF SKILL POINTS TO BET : " + currentPlayer.getBetPoints();
@@ -94,6 +106,5 @@ public class BettingManager : MonoBehaviour
         txtPlayer2Bet.text = player2.getCharacterName() + " BETS : " + player2.getBetPoints();
 
         btnConfirmBet.GetComponentInChildren<Text>().text = currentPlayer.getCharacterName() + " CONFIRM YOUR BET";
-
     }
 }

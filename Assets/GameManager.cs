@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        ChangeScene(currentScene.LEVELUP);
     }
 
     // Update is called once per frame
@@ -49,21 +49,24 @@ public class GameManager : MonoBehaviour
         switch (newScene)
         {
             case currentScene.LEVELUP:
+                playersCreated = 0;
                 cnvsBattle.SetActive(false);
                 cnvsBet.SetActive(false);
+                this.GetComponent<LevelUpManager>().ShowScreen();
                 cnvsLevelUp.SetActive(true);
                 break;
 
             case currentScene.BET:
                 cnvsBattle.SetActive(false);
                 cnvsLevelUp.SetActive(false);
-                this.GetComponent<BettingManager>().ResetCanvas();
+                this.GetComponent<BettingManager>().ShowScreen();
                 cnvsBet.SetActive(true);
                 break;
 
             case currentScene.BATTLE:
                 cnvsBet.SetActive(false);
                 cnvsLevelUp.SetActive(false);
+                this.GetComponent<CombatManager>().ShowScreen();
                 cnvsBattle.SetActive(true);
                 break;
 

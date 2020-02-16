@@ -7,23 +7,26 @@ public class CombatManager : MonoBehaviour
 {
     Character activePlayer;
     Character waitingPlayer;
+    Character winner, loser;
 
     [Header("Buttons")]
     public Button btnAttack;
     public Button btnHeal;
     public Button btnSpecial;
-    public Button btnDefend;
+    public Button btnRun;
+    public Button btnExit;
 
     [Header("Text")]
     public Text txtConsole;
     public Text txtPlayer1Health, txtPlayer2Health;
+    public Text txtBattleResultsConsole;
 
+    public GameObject cnvs_BattleResults;
 
     //Alternativly, if they have to bet the same amount then we only need one variable to hold the total bet
-    int player1PointBet;
-    int player2PointBet;
 
     private int turnNum = 1;
+    private int rewardPoints = 0;
 
     private (int, int) damageRange;
     private (int, int) defenceRange;
@@ -45,15 +48,18 @@ public class CombatManager : MonoBehaviour
 
     void Start()
     {
+        btnAttack.onClick.AddListener(delegate { currentplayerAction = playerAction.ATTACK; });
+        btnHeal.onClick.AddListener(delegate { currentplayerAction = playerAction.HEAL; });
+        btnSpecial.onClick.AddListener(delegate { currentplayerAction = playerAction.SPECIAL; });
+        btnRun.onClick.AddListener(delegate { currentplayerAction = playerAction.RUN; ; });
+    }
+
+    public void ShowScreen()
+    {
         //get Player IDs, create PlayerStructs (player stats and pointBet) randomly assign one to go first
-        turnNum = Random.Range(1, 2);
+        //turnNum = Random.Range(1, 2);
+        turnNum = 1;
         ChangeTurn();
-
-        btnAttack.onClick.AddListener(delegate { AttackEnemy(); });
-        btnHeal.onClick.AddListener(delegate { HealPlayer(); });
-        btnSpecial.onClick.AddListener(delegate { SpecialMove(); });
-        btnDefend.onClick.AddListener(delegate { Defend(); });
-
         UpdateText();
     }
 
@@ -72,7 +78,7 @@ public class CombatManager : MonoBehaviour
             turnNum = 1;
         }
 
-        activePlayer.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+        activePlayer.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
         waitingPlayer.GetComponent<Renderer>().material.SetColor("_Color", Color.gray);
     }
 
@@ -85,50 +91,23 @@ public class CombatManager : MonoBehaviour
 
             switch (currentplayerAction)
             {
-
                 case playerAction.ATTACK:
-                    damageRange = activePlayer.getAttack();
-                    attack = Random.Range(damageRange.Item1, damageRange.Item2);
-
-                    defenceRange = activePlayer.getDefence();
-                    defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
-
-                    result = ((attack - defence) > 0) ? (attack - defence) : 0;
-                    waitingPlayer.setCurrentHealth(result, true);
-
-                    txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
-                    UpdateText();
-
-                    currentplayerAction = playerAction.NULL;
+                    AttackEnemy();
                     break;
 
                 case playerAction.HEAL:
-                    activePlayer.setCurrentHealth(activePlayer.getHeal(), false);
-                    txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
-                    UpdateText();
-                    currentplayerAction = playerAction.NULL;
+                    HealPlayer();
                     break;
+
                 case playerAction.SPECIAL:
-                    //do something
-                    damageRange = activePlayer.getSpecial();
-                    attack = Random.Range(damageRange.Item1, damageRange.Item2);
-
-                    defenceRange = activePlayer.getDefence();
-                    defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
-                    waitingPlayer.setCurrentHealth(((attack - defence) > 0) ? (attack - defence) : 0, true);
-                    UpdateText();
-
-                    currentplayerAction = playerAction.NULL;
+                    SpecialMove();
                     break;
                 case playerAction.DEFEND:
                     //do something
-                    UpdateText();
                     currentplayerAction = playerAction.NULL;
                     break;
                 case playerAction.RUN:
-                    //random chance to escape fight, lose half of bet points
-                    UpdateText();
-                    currentplayerAction = playerAction.NULL;
+                    runFromBattle();
                     break;
                 case playerAction.NULL:
                     break;
@@ -139,32 +118,71 @@ public class CombatManager : MonoBehaviour
 
     public void AttackEnemy()
     {
-        currentplayerAction = playerAction.ATTACK;
+        damageRange = activePlayer.getAttack();
+        attack = Random.Range(damageRange.Item1, damageRange.Item2);
+
+        defenceRange = activePlayer.getDefence();
+        defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
+
+        result = ((attack - defence) > 0) ? (attack - defence) : 0;
+        waitingPlayer.changeCurrentHealth(result, true);
+
+        txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
+
+        UpdateText();
+        CheckBattleOver();
         ChangeTurn();
+
+        currentplayerAction = playerAction.NULL;
     }
 
     public void HealPlayer()
     {
-        currentplayerAction = playerAction.HEAL;
-        ChangeTurn();
-    }
+        damageRange = activePlayer.getHeal();
+        attack = Random.Range(damageRange.Item1, damageRange.Item2);
 
-    public void Defend()
-    {
-        currentplayerAction = playerAction.DEFEND;
+        activePlayer.changeCurrentHealth(attack, false);
+        
+        if (activePlayer.getCurrentHealth() >= activePlayer.getMaxHealth())
+        {
+            activePlayer.setCurrentHealth(activePlayer.getMaxHealth());
+        }
+
+        txtConsole.text = activePlayer.getCharacterName() + " HEALS " + activePlayer.getCharacterName() + " FOR " + result + " HEALTH";
+
+        UpdateText();
+        CheckBattleOver();
         ChangeTurn();
+
+        currentplayerAction = playerAction.NULL;
     }
 
     public void SpecialMove()
     {
-        currentplayerAction = playerAction.SPECIAL;
+        damageRange = activePlayer.getSpecial();
+        attack = Random.Range(damageRange.Item1, damageRange.Item2);
+
+        defenceRange = activePlayer.getDefence();
+        defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
+
+        result = ((attack - defence) > 0) ? (attack - defence) : 0;
+        waitingPlayer.changeCurrentHealth(result, true);
+
+        txtConsole.text = activePlayer.getCharacterName() + " SPECIAL ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
+
+        UpdateText();
+        CheckBattleOver();
         ChangeTurn();
+
+        currentplayerAction = playerAction.NULL;
     }
 
-    public void Run()
+    public void runFromBattle()
     {
-        currentplayerAction = playerAction.RUN;
+        //random chance to escape fight, lose half of bet points
+        UpdateText();
         ChangeTurn();
+        currentplayerAction = playerAction.NULL;
     }
 
     public void UpdateText()
@@ -172,10 +190,43 @@ public class CombatManager : MonoBehaviour
         btnAttack.GetComponentInChildren<Text>().text = "ATTACK " + activePlayer.getAttack().Item1 + " - " + activePlayer.getAttack().Item2;
         btnHeal.GetComponentInChildren<Text>().text = "HEAL " + activePlayer.getHeal();
         btnSpecial.GetComponentInChildren<Text>().text = "SPECIAL " + activePlayer.getSpecial().Item1 + " - " + activePlayer.getSpecial().Item2;
-        btnDefend.GetComponentInChildren<Text>().text = "DEFEND " + activePlayer.getDefence().Item1 + " - " + activePlayer.getDefence().Item2;
+        btnRun.GetComponentInChildren<Text>().text = "RUN"; ;
 
         txtPlayer1Health.text = this.GetComponent<GameManager>().player1.GetComponent<Character>().getCurrentHealth() + " / " + this.GetComponent<GameManager>().player1.GetComponent<Character>().getMaxHealth();
         txtPlayer2Health.text = this.GetComponent<GameManager>().player2.GetComponent<Character>().getCurrentHealth() + " / " + this.GetComponent<GameManager>().player2.GetComponent<Character>().getMaxHealth();
 
+    }
+
+    public void CheckBattleOver()
+    {
+        if (waitingPlayer.getCurrentHealth() <= 0)
+        {
+            cnvs_BattleResults.SetActive(true);
+
+            //just a random number for now, would be like xp gained from battle
+            rewardPoints = Random.Range(2, 5); 
+            rewardPoints += activePlayer.getBetPoints() + waitingPlayer.getBetPoints(); //add the bet points
+
+            txtBattleResultsConsole.text = activePlayer.getCharacterName() + " DEFEATED " + waitingPlayer.getCharacterName() + 
+                " AND WINS " + rewardPoints + " SKILL POINTS";
+
+            activePlayer.setPoints(rewardPoints);
+            btnExit.onClick.AddListener(delegate { this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.LEVELUP); });
+        }
+
+        else if (activePlayer.getCurrentHealth() <= 0)
+        {
+            cnvs_BattleResults.SetActive(true);
+
+            //just a random number for now, would be like xp gained from battle
+            rewardPoints = Random.Range(2, 5);
+            rewardPoints += activePlayer.getBetPoints() + waitingPlayer.getBetPoints(); //add the bet points
+
+            txtBattleResultsConsole.text = waitingPlayer.getCharacterName() + " DEFEATED " + activePlayer.getCharacterName() +
+                " AND WINS " + rewardPoints + " SKILL POINTS";
+
+            waitingPlayer.setPoints(rewardPoints);
+            btnExit.onClick.AddListener(delegate { this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.LEVELUP); });
+        }
     }
 }

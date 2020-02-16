@@ -38,14 +38,6 @@ public class LevelUpManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
-        player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
-        currentPlayer = player1;
-
-        txtPlaceholder.text = "Player 1 Name...";
-
-        ResetCanvas();
-
         btnAttackUp.onClick.AddListener(delegate { ChangeAttack(1); });
         btnAttackDown.onClick.AddListener(delegate { ChangeAttack(-1); });
 
@@ -64,7 +56,30 @@ public class LevelUpManager : MonoBehaviour
         btnConfirm.onClick.AddListener(delegate { ConfirmLevelUp(); });
     }
 
-    void ResetCanvas()
+    public void ShowScreen()
+    {
+        player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
+        player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
+        currentPlayer = player1;
+
+        if (currentPlayer.getCharacterName() == null || currentPlayer.getCharacterName() == "")
+        {
+            inpPlaceholder.text = "";
+            txtPlaceholder.text = "Player 1 Name...";
+            txtName.text = "";
+        }
+         
+        else
+        {
+            inpPlaceholder.text = currentPlayer.getCharacterName();
+            txtName.text = currentPlayer.getCharacterName();
+            txtPlaceholder.text = currentPlayer.getCharacterName();
+        }
+
+        UpdateText();
+    }
+
+    public void UpdateText()
     {
         txtPoints.text = "TOTAL SKILL POINTS : " + currentPlayer.getPoints();
         txtAttack.text = "ATTACK : " + currentPlayer.getAttack().Item1 + " - " + currentPlayer.getAttack().Item2;
@@ -118,6 +133,7 @@ public class LevelUpManager : MonoBehaviour
         {
             currentPlayer.setMaxHealth(change);
             currentPlayer.setMaxHealthLvl(change);
+            currentPlayer.setCurrentHealth(currentPlayer.getMaxHealth());
 
             txtMaxHealth.text = "MAX HEALTH : " + currentPlayer.getMaxHealth();
             txtMaxHealthLvl.text = "LVL : " + currentPlayer.getMaxHealthLvl();
@@ -163,20 +179,34 @@ public class LevelUpManager : MonoBehaviour
             inpPlaceholder.GetComponent<Image>().color = Color.white;
 
             currentPlayer.setCharacterName(txtName.text);
-            inpPlaceholder.text = "";
-            txtPlaceholder.text = "Player 2 Name...";
 
-            if (currentPlayer = player1)
+            if (currentPlayer == player1)
             {
                 currentPlayer = player2;
             }
-            else if (currentPlayer = player2)
+            else if (currentPlayer == player2)
             {
                 currentPlayer = player1;
             }
 
             this.GetComponent<GameManager>().CreatePlayer();
-            ResetCanvas();
+
+            if (currentPlayer.getCharacterName() == null || currentPlayer.getCharacterName() == "")
+            {
+                inpPlaceholder.text = "";
+                txtPlaceholder.text = "Player 2 Name...";
+                txtName.text = "";
+            }
+
+            else
+            {
+                inpPlaceholder.text = currentPlayer.getCharacterName();
+                txtName.text = currentPlayer.getCharacterName();
+                txtPlaceholder.text = currentPlayer.getCharacterName();
+            }
+
+            
+            UpdateText();
         }
     }
 }

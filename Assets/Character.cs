@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    private string characterName = "blank";
-    private int maxHealth = 100;
-    private int currentHealth = 100;
-    private int defenceLower = 12;
-    private int defenceUpper = 14;
-    private int attackLower = 15;
-    private int attackUpper = 19;
-    private int specialLower = 17;
-    private int specialUpper = 18;
-    private int heal = 20;
+    private string characterName = "";
+    private int maxHealth = 5;
+    private int currentHealth = 5;
+    private int defenceLower = 2;
+    private int defenceUpper = 8;
+    private int attackLower = 1;
+    private int attackUpper = 5;
+    private int specialLower = 4;
+    private int specialUpper = 7;
+    private int healLower = 5;
+    private int healUpper = 10;
     private int luck = 17;
 
     private int attackLvl = 0;
@@ -52,8 +53,13 @@ public class Character : MonoBehaviour
         return currentHealth;
     }
 
+    public void setCurrentHealth(int value)
+    {
+        currentHealth = value;
+    }
+
     //Used for both damaging the player and healing the player
-    public void setCurrentHealth(int change, bool damage)
+    public void changeCurrentHealth(int change, bool damage)
     {
         if (damage)
         {
@@ -64,8 +70,6 @@ public class Character : MonoBehaviour
         {
             currentHealth += change;
         }
-
-        print(this.characterName + " : " + currentHealth);
     }
 
     //returns first the lowest possible attack value, then the highest
@@ -110,14 +114,15 @@ public class Character : MonoBehaviour
         points -= change;
     }
 
-    public int getHeal()
+    public (int, int) getHeal()
     {
-        return heal;
+        return (healLower, healUpper);
     }
 
     public void setHeal(int change)
     {
-        heal += change;
+        healLower += change;
+        healUpper += change;
 
         points -= change;
     }
