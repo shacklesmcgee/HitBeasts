@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class CombatManager : MonoBehaviour
 {
-    Character activePlayer;
-    Character waitingPlayer;
+    Character activePlayer, waitingPlayer;
+    Character player1, player2;
+
     Character winner, loser;
 
     [Header("Buttons")]
@@ -52,10 +53,24 @@ public class CombatManager : MonoBehaviour
         btnHeal.onClick.AddListener(delegate { currentplayerAction = playerAction.HEAL; });
         btnSpecial.onClick.AddListener(delegate { currentplayerAction = playerAction.SPECIAL; });
         btnRun.onClick.AddListener(delegate { currentplayerAction = playerAction.RUN; ; });
+
+        player1 = GameObject.Find("Player1").GetComponent<Character>();
+        player2 = GameObject.Find("Player2").GetComponent<Character>();
     }
 
     public void ShowScreen()
     {
+        cnvs_BattleResults.SetActive(false);
+
+        player1.setCurrentHealth(player1.getMaxHealth());
+        player2.setCurrentHealth(player2.getMaxHealth());
+
+
+        btnAttack.interactable = true;
+        btnHeal.interactable = true;
+        btnSpecial.interactable = true;
+        btnRun.interactable = true;
+
         //get Player IDs, create PlayerStructs (player stats and pointBet) randomly assign one to go first
         //turnNum = Random.Range(1, 2);
         turnNum = 1;
@@ -67,14 +82,14 @@ public class CombatManager : MonoBehaviour
     {
         if (turnNum == 1)
         {
-            activePlayer = GameObject.Find("Player1").GetComponent<Character>();
-            waitingPlayer = GameObject.Find("Player2").GetComponent<Character>();
+            activePlayer = player1;
+            waitingPlayer = player2;
             turnNum = 2;
         }
         else if(turnNum == 2)
         {
-            activePlayer = GameObject.Find("Player2").GetComponent<Character>();
-            waitingPlayer = GameObject.Find("Player1").GetComponent<Character>();
+            activePlayer = player2;
+            waitingPlayer = player1;
             turnNum = 1;
         }
 
@@ -204,14 +219,18 @@ public class CombatManager : MonoBehaviour
             cnvs_BattleResults.SetActive(true);
 
             //just a random number for now, would be like xp gained from battle
-            rewardPoints = Random.Range(2, 5); 
-            rewardPoints += activePlayer.getBetPoints() + waitingPlayer.getBetPoints(); //add the bet points
+            rewardPoints = Random.Range(2, 5);  
 
-            txtBattleResultsConsole.text = activePlayer.getCharacterName() + " DEFEATED " + waitingPlayer.getCharacterName() + 
-                " AND WINS " + rewardPoints + " SKILL POINTS";
+            txtBattleResultsConsole.text = activePlayer.getCharacterName() + " DEFEATED " + waitingPlayer.getCharacterName() +
+                " AND WINS " + rewardPoints + " FROM BATTLE AND " + (activePlayer.getBetPoints() + waitingPlayer.getBetPoints()) + " FROM BETS";
 
-            activePlayer.setPoints(rewardPoints);
+            activePlayer.setPoints(rewardPoints + (activePlayer.getBetPoints() + waitingPlayer.getBetPoints()));
             btnExit.onClick.AddListener(delegate { this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.LEVELUP); });
+
+            btnAttack.interactable = false;
+            btnHeal.interactable = false;
+            btnSpecial.interactable = false;
+            btnRun.interactable = false;
         }
 
         else if (activePlayer.getCurrentHealth() <= 0)
@@ -225,8 +244,13 @@ public class CombatManager : MonoBehaviour
             txtBattleResultsConsole.text = waitingPlayer.getCharacterName() + " DEFEATED " + activePlayer.getCharacterName() +
                 " AND WINS " + rewardPoints + " SKILL POINTS";
 
-            waitingPlayer.setPoints(rewardPoints);
+            waitingPlayer.setPoints(rewardPoints + (activePlayer.getBetPoints() + waitingPlayer.getBetPoints()));
             btnExit.onClick.AddListener(delegate { this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.LEVELUP); });
+
+            btnAttack.interactable = false;
+            btnHeal.interactable = false;
+            btnSpecial.interactable = false;
+            btnRun.interactable = false;
         }
     }
 }

@@ -40,10 +40,11 @@ public class BettingManager : MonoBehaviour
 
     public void ChangeBet(int change)
     {
-        if ((change > 0 && currentPlayer.getPoints() > 0) || 
+        if ((change > 0 && currentPlayer.getPoints() > 0) ||
             (change < 0 && currentPlayer.getBetPoints() > 0))
         {
             currentPlayer.setBetPoints(change);
+            currentPlayer.setPoints(-change);
 
             UpdateText();
         }
@@ -61,7 +62,7 @@ public class BettingManager : MonoBehaviour
 
     public void ConfirmBet()
     {
-        currentPlayer.setPoints(-currentPlayer.getBetPoints());
+        
 
         if (currentPlayer == player1)
         {
@@ -90,6 +91,9 @@ public class BettingManager : MonoBehaviour
         player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
         player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
         currentPlayer = player1;
+
+        currentPlayer.setBetPoints(-currentPlayer.getBetPoints());
+        player2.setBetPoints(-player2.getBetPoints());
 
         UpdateText();
 
