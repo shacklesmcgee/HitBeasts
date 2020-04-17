@@ -62,6 +62,7 @@ public class NetworkManager : MonoBehaviour
         public string user_id;
         public string game_id;
         public bool loggedIn;
+        public string address;
 
         public int attackLvl;
         public int defenceLvl;
@@ -69,6 +70,7 @@ public class NetworkManager : MonoBehaviour
         public int specialLvl;
         public int luckLvl;
         public int skillPoints;
+
     }
 
     [Serializable]
@@ -98,6 +100,7 @@ public class NetworkManager : MonoBehaviour
         PLAYER_DISCONNECTED,
         CONNECTION_APPROVED,
         LIST_OF_PLAYERS,
+        START_BETTING
     };
 
     void OnReceived(IAsyncResult result)
@@ -135,6 +138,7 @@ public class NetworkManager : MonoBehaviour
                     lastestGameState = JsonUtility.FromJson<GameState>(returnData);
 
                     receivedData = lastestGameState.players[0].playerData;
+                    
                     if (receivedData.user_id == null || receivedData.user_id == "")
                     {
                         receivedData.user_id = "Error: Password doesn't match or User doesn't exist!";
@@ -149,12 +153,16 @@ public class NetworkManager : MonoBehaviour
                     break;
 
                 case commands.LIST_OF_PLAYERS:
+
+                    readyPlayersList.Clear();
                     Debug.Log("Got the list of players!");
+
                     lastestGameState = JsonUtility.FromJson<GameState>(returnData);
 
                     for (int x = 0; x < lastestGameState.players.Length; x++)
                     {
                         receivedData = lastestGameState.players[x].playerData;
+                        Debug.Log(receivedData.address);
                         if (receivedData.user_id == null || receivedData.user_id == "")
                         {
                             Debug.Log("No Players Found!");
