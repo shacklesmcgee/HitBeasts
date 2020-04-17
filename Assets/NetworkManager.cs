@@ -177,9 +177,12 @@ public class NetworkManager : MonoBehaviour
                             continue;
                         }
 
-                        readyPlayersList.Add(receivedData);
-                        listEmpty = false;
-                        gotList = true;
+                        if (!readyPlayersList.Contains(receivedData))
+                        {
+                            readyPlayersList.Add(receivedData);
+                            listEmpty = false;
+                            gotList = true;
+                        }
                     }
                     break;
 
