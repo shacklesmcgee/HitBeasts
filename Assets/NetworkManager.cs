@@ -58,6 +58,7 @@ public class NetworkManager : MonoBehaviour
 
     void OnDestroy()
     {
+        LogoutPlayer(player1.getCharacterName());
         udp.Dispose();
     }
 
@@ -324,6 +325,13 @@ public class NetworkManager : MonoBehaviour
     public void LoginPlayer(string name, string password)
     {
         string data = "login," + name + "," + password;
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    public void LogoutPlayer(string name)
+    {
+        string data = "logout," + name;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }

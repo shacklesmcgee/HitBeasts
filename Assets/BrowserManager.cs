@@ -45,7 +45,7 @@ public class BrowserManager : MonoBehaviour
             GameObject btnNew = Instantiate(defaultBtn) as GameObject;
             btnNew.transform.SetParent(boxContent.transform, false);
             btnNew.GetComponentInChildren<Text>().text = readyPlayers[x].user_id;
-            btnNew.GetComponent<Button>().onClick.AddListener(delegate { SetPlayer2(btnNew.GetComponentInChildren<Text>().text); });
+            btnNew.GetComponent<Button>().onClick.AddListener(delegate { SetPlayer2(btnNew.GetComponentInChildren<Text>().text); this.GetComponent<NetworkManager>().JoinPlayers(); });
         }
     }
 
@@ -65,8 +65,7 @@ public class BrowserManager : MonoBehaviour
         player2.setPoints(-player2.getPoints());
         player2.setPoints(tempData.skillPoints);
 
-        this.GetComponent<NetworkManager>().JoinPlayers();
+        
 
-        //this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
     }
 }
