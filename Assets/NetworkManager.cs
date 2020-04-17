@@ -45,10 +45,6 @@ public class NetworkManager : MonoBehaviour
         loginSuccessful = false;
         gotList = false;
 
-        newPlayers = new List<string>();
-        droppedPlayers = new List<string>();
-        currentPlayers = new Dictionary<string, GameObject>();
-
         readyPlayersList = new List<PlayerData>();
         udp = new UdpClient();
         udp.Connect("3.82.146.92", 12345);
@@ -314,11 +310,13 @@ public class NetworkManager : MonoBehaviour
                     if (readyPlayersList[x].address == receivedData.address)
                     {
                         this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
+                        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
                         joinSuccessful = false;
                         break;
                     }
-                        
+
                 }
+            }
 
         }
     }
