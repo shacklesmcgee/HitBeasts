@@ -8,14 +8,14 @@ public class Character : MonoBehaviour
     private int maxHealth = 5;
     private int currentHealth = 5;
     private int defenceLower = 2;
-    private int defenceUpper = 8;
-    private int attackLower = 1;
+    private int defenceUpper = 4;
+    private int attackLower = 2;
     private int attackUpper = 5;
     private int specialLower = 4;
-    private int specialUpper = 7;
-    private int healLower = 5;
-    private int healUpper = 10;
-    private int luck = 17;
+    private int specialUpper = 5;
+    private int healLower = 1;
+    private int healUpper = 2;
+    private int luck = 15;
 
     private int attackLvl = 0;
     private int defenceLvl = 0;
@@ -147,6 +147,7 @@ public class Character : MonoBehaviour
     public void setAttackLvl(int change)
     {
         attackLvl += change;
+        setAttack(change);
     }
 
     public int getDefenceLvl()
@@ -157,6 +158,7 @@ public class Character : MonoBehaviour
     public void setDefenceLvl(int change)
     {
         defenceLvl += change;
+        setDefence(change);
     }
 
     public int getMaxHealthLvl()
@@ -167,6 +169,8 @@ public class Character : MonoBehaviour
     public void setMaxHealthLvl(int change)
     {
         maxHealthLvl += change;
+        setMaxHealth(change);
+        setHeal(change);
     }
 
     public int getSpecialLvl()
@@ -177,6 +181,7 @@ public class Character : MonoBehaviour
     public void setSpecialLvl(int change)
     {
         specialLvl += change;
+        setSpecial(change);
     }
 
     public int getLuckLvl()
@@ -187,6 +192,7 @@ public class Character : MonoBehaviour
     public void setLuckLvl(int change)
     {
         luckLvl += change;
+        setLuck(change);
     }
 
     public int getPoints()
@@ -207,6 +213,31 @@ public class Character : MonoBehaviour
     public void setBetPoints(int change)
     {
         betPoints += change;
+    }
+
+    public void resetCharacter()
+    {
+        characterName = "";
+        maxHealth = 5;
+        currentHealth = 5;
+        defenceLower = 2;
+        defenceUpper = 4;
+        attackLower = 2;
+        attackUpper = 5;
+        specialLower = 4;
+        specialUpper = 5;
+        healLower = 1;
+        healUpper = 2;
+        luck = 15;
+
+        attackLvl = 0;
+        defenceLvl = 0;
+        maxHealthLvl = 0;
+        specialLvl = 0;
+        luckLvl = 0;
+
+        points = 0;
+        betPoints = 0;
     }
 
 }

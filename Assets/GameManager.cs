@@ -7,9 +7,12 @@ public class GameManager : MonoBehaviour
     int playersCreated = 0;
 
     [Header("Canvases")]
+    public GameObject cnvsLogin;
     public GameObject cnvsBattle;
     public GameObject cnvsLevelUp;
     public GameObject cnvsBet;
+    public GameObject cnvsBrowser;
+
 
     [Header("Players")]
     public GameObject player1;
@@ -17,15 +20,17 @@ public class GameManager : MonoBehaviour
 
     public enum currentScene
     {
+        LOGIN,
         LEVELUP,
         BET,
-        BATTLE
+        BATTLE,
+        BROWSER
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        ChangeScene(currentScene.LEVELUP);
+        ChangeScene(currentScene.LOGIN);
     }
 
     // Update is called once per frame
@@ -51,28 +56,50 @@ public class GameManager : MonoBehaviour
     {
         switch (newScene)
         {
-            case currentScene.LEVELUP:
-                playersCreated = 0;
-                cnvsBattle.SetActive(false);
+            case currentScene.LOGIN:
+                cnvsLevelUp.SetActive(false);
+                cnvsBrowser.SetActive(false);
                 cnvsBet.SetActive(false);
+                cnvsBattle.SetActive(false);
+                this.GetComponent<LoginManager>().ShowScreen();
+                cnvsLogin.SetActive(true);
+                break;
+
+            case currentScene.LEVELUP:
+                cnvsLogin.SetActive(false);
+                cnvsBrowser.SetActive(false);
+                cnvsBet.SetActive(false);
+                cnvsBattle.SetActive(false);
                 this.GetComponent<LevelUpManager>().ShowScreen();
                 cnvsLevelUp.SetActive(true);
                 break;
 
-            case currentScene.BET:
-                cnvsBattle.SetActive(false);
+            case currentScene.BROWSER:
+                cnvsLogin.SetActive(false);
                 cnvsLevelUp.SetActive(false);
+                cnvsBet.SetActive(false);
+                cnvsBattle.SetActive(false);
+                this.GetComponent<BrowserManager>().ShowScreen();
+                cnvsBrowser.SetActive(true);
+                break;
+
+            case currentScene.BET:
+                cnvsLogin.SetActive(false);
+                cnvsLevelUp.SetActive(false);
+                cnvsBrowser.SetActive(false);
+                cnvsBattle.SetActive(false);
                 this.GetComponent<BettingManager>().ShowScreen();
                 cnvsBet.SetActive(true);
                 break;
 
             case currentScene.BATTLE:
-                cnvsBet.SetActive(false);
+                cnvsLogin.SetActive(false);
                 cnvsLevelUp.SetActive(false);
+                cnvsBrowser.SetActive(false);
+                cnvsBet.SetActive(false);
                 this.GetComponent<CombatManager>().ShowScreen();
                 cnvsBattle.SetActive(true);
                 break;
-
         }
     }
 }

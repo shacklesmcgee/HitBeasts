@@ -16,8 +16,6 @@ public class LevelUpManager : MonoBehaviour
 
     [Header("Text Fields")]
     public Text txtName;
-    public InputField inpPlaceholder;
-    public Text txtPlaceholder;
     public Text txtPoints;
     public Text txtAttack;
     public Text txtDefence;
@@ -32,8 +30,6 @@ public class LevelUpManager : MonoBehaviour
     public Text txtLuckLvl;
 
     private Character player1;
-    private Character player2;
-    private Character currentPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -59,40 +55,26 @@ public class LevelUpManager : MonoBehaviour
     public void ShowScreen()
     {
         player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
-        player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
-        currentPlayer = player1;
 
-        if (currentPlayer.getCharacterName() == null || currentPlayer.getCharacterName() == "")
-        {
-            inpPlaceholder.text = "";
-            txtPlaceholder.text = "Player 1 Name...";
-            txtName.text = "";
-        }
-         
-        else
-        {
-            inpPlaceholder.text = currentPlayer.getCharacterName();
-            txtName.text = currentPlayer.getCharacterName();
-            txtPlaceholder.text = currentPlayer.getCharacterName();
-        }
+        txtName.text = player1.getCharacterName();
 
         UpdateText();
     }
 
     public void UpdateText()
     {
-        txtPoints.text = "TOTAL SKILL POINTS : " + currentPlayer.getPoints();
-        txtAttack.text = "ATTACK : " + currentPlayer.getAttack().Item1 + " - " + currentPlayer.getAttack().Item2;
-        txtDefence.text = "DEFENCE : " + currentPlayer.getDefence().Item1 + " - " + currentPlayer.getDefence().Item2;
-        txtMaxHealth.text = "MAX HEALTH : " + currentPlayer.getMaxHealth();
-        txtSpecial.text = "SPECIAL MOVE : " + currentPlayer.getSpecial().Item1 + " - " + currentPlayer.getSpecial().Item2;
-        txtLuck.text = "LUCK : " + currentPlayer.getLuck();
+        txtPoints.text = "TOTAL SKILL POINTS : " + player1.getPoints();
+        txtAttack.text = "ATTACK : " + player1.getAttack().Item1 + " - " + player1.getAttack().Item2;
+        txtDefence.text = "DEFENCE : " + player1.getDefence().Item1 + " - " + player1.getDefence().Item2;
+        txtMaxHealth.text = "MAX HEALTH : " + player1.getMaxHealth();
+        txtSpecial.text = "SPECIAL MOVE : " + player1.getSpecial().Item1 + " - " + player1.getSpecial().Item2;
+        txtLuck.text = "LUCK : " + player1.getLuck();
 
-        txtAttackLvl.text = "LVL : " + currentPlayer.getAttackLvl();
-        txtDefenceLvl.text = "LVL : " + currentPlayer.getDefenceLvl();
-        txtMaxHealthLvl.text = "LVL : " + currentPlayer.getMaxHealthLvl();
-        txtSpecialLvl.text = "LVL : " + currentPlayer.getSpecialLvl();
-        txtLuckLvl.text = "LVL : " + currentPlayer.getLuckLvl();
+        txtAttackLvl.text = "LVL : " + player1.getAttackLvl();
+        txtDefenceLvl.text = "LVL : " + player1.getDefenceLvl();
+        txtMaxHealthLvl.text = "LVL : " + player1.getMaxHealthLvl();
+        txtSpecialLvl.text = "LVL : " + player1.getSpecialLvl();
+        txtLuckLvl.text = "LVL : " + player1.getLuckLvl();
     }
 
     // Update is called once per frame
@@ -103,110 +85,67 @@ public class LevelUpManager : MonoBehaviour
 
     public void ChangeAttack(int change)
     {
-        if ((change > 0 && currentPlayer.getPoints() > 0) || (change < 0 && currentPlayer.getAttackLvl() > 0))
+        if ((change > 0 && player1.getPoints() > 0) || (change < 0 && player1.getAttackLvl() > 0))
         {
-            currentPlayer.setAttack(change);
-            currentPlayer.setAttackLvl(change);
+            player1.setAttackLvl(change);
 
-            txtAttack.text = "ATTACK : " + currentPlayer.getAttack().Item1 + " - " + currentPlayer.getAttack().Item2;
-            txtAttackLvl.text = "LVL : " + currentPlayer.getAttackLvl();
-            txtPoints.text = "TOTAL SKILL POINTS : " + currentPlayer.getPoints();
+            txtAttack.text = "ATTACK : " + player1.getAttack().Item1 + " - " + player1.getAttack().Item2;
+            txtAttackLvl.text = "LVL : " + player1.getAttackLvl();
+            txtPoints.text = "TOTAL SKILL POINTS : " + player1.getPoints();
         }
     }
 
     public void ChangeDefence(int change)
     {
-        if ((change > 0 && currentPlayer.getPoints() > 0) || (change < 0 && currentPlayer.getDefenceLvl() > 0))
+        if ((change > 0 && player1.getPoints() > 0) || (change < 0 && player1.getDefenceLvl() > 0))
         {
-            currentPlayer.setDefence(change);
-            currentPlayer.setDefenceLvl(change);
+            player1.setDefenceLvl(change);
 
-            txtDefence.text = "DEFENCE : " + currentPlayer.getDefence().Item1 + " - " + currentPlayer.getDefence().Item2;
-            txtDefenceLvl.text = "LVL : " + currentPlayer.getDefenceLvl();
-            txtPoints.text = "TOTAL SKILL POINTS : " + currentPlayer.getPoints();
+            txtDefence.text = "DEFENCE : " + player1.getDefence().Item1 + " - " + player1.getDefence().Item2;
+            txtDefenceLvl.text = "LVL : " + player1.getDefenceLvl();
+            txtPoints.text = "TOTAL SKILL POINTS : " + player1.getPoints();
         }
     }
 
     public void ChangeMaxHealth(int change)
     {
-        if ((change > 0 && currentPlayer.getPoints() > 0) || (change < 0 && currentPlayer.getMaxHealthLvl() > 0))
+        if ((change > 0 && player1.getPoints() > 0) || (change < 0 && player1.getMaxHealthLvl() > 0))
         {
-            currentPlayer.setMaxHealth(change);
-            currentPlayer.setMaxHealthLvl(change);
-            currentPlayer.setCurrentHealth(currentPlayer.getMaxHealth());
+            player1.setMaxHealthLvl(change);
+            player1.setCurrentHealth(player1.getMaxHealth());
 
-            txtMaxHealth.text = "MAX HEALTH : " + currentPlayer.getMaxHealth();
-            txtMaxHealthLvl.text = "LVL : " + currentPlayer.getMaxHealthLvl();
-            txtPoints.text = "TOTAL SKILL POINTS : " + currentPlayer.getPoints();
+            txtMaxHealth.text = "MAX HEALTH : " + player1.getMaxHealth();
+            txtMaxHealthLvl.text = "LVL : " + player1.getMaxHealthLvl();
+            txtPoints.text = "TOTAL SKILL POINTS : " + player1.getPoints();
         }
     }
 
     public void ChangeSpecial(int change)
     {
-        if ((change > 0 && currentPlayer.getPoints() > 0) || (change < 0 && currentPlayer.getSpecialLvl() > 0))
+        if ((change > 0 && player1.getPoints() > 0) || (change < 0 && player1.getSpecialLvl() > 0))
         {
-            currentPlayer.setSpecial(change);
-            currentPlayer.setSpecialLvl(change);
+            player1.setSpecialLvl(change);
 
-            txtSpecial.text = "SPECIAL MOVE : " + currentPlayer.getSpecial().Item1 + " - " + currentPlayer.getSpecial().Item2;
-            txtSpecialLvl.text = "LVL : " + currentPlayer.getSpecialLvl();
-            txtPoints.text = "TOTAL SKILL POINTS : " + currentPlayer.getPoints();
+            txtSpecial.text = "SPECIAL MOVE : " + player1.getSpecial().Item1 + " - " + player1.getSpecial().Item2;
+            txtSpecialLvl.text = "LVL : " + player1.getSpecialLvl();
+            txtPoints.text = "TOTAL SKILL POINTS : " + player1.getPoints();
         }
     }
 
     public void ChangeLuck(int change)
     {
-        if ((change > 0 && currentPlayer.getPoints() > 0) || (change < 0 && currentPlayer.getLuckLvl() > 0))
+        if ((change > 0 && player1.getPoints() > 0) || (change < 0 && player1.getLuckLvl() > 0))
         {
-            currentPlayer.setLuck(change);
-            currentPlayer.setLuckLvl(change);
+            player1.setLuckLvl(change);
 
-            txtLuck.text = "LUCK : " + currentPlayer.getLuck();
-            txtLuckLvl.text = "LVL : " + currentPlayer.getLuckLvl();
-            txtPoints.text = "TOTAL SKILL POINTS : " + currentPlayer.getPoints();
+            txtLuck.text = "LUCK : " + player1.getLuck();
+            txtLuckLvl.text = "LVL : " + player1.getLuckLvl();
+            txtPoints.text = "TOTAL SKILL POINTS : " + player1.getPoints();
         }
     }
 
     public void ConfirmLevelUp()
     {
-        if (txtName.text == "" || txtName.text == null)
-        {
-            inpPlaceholder.GetComponent<Image>().color = Color.red;
-        }
-
-        else
-        {
-            inpPlaceholder.GetComponent<Image>().color = Color.white;
-
-            currentPlayer.setCharacterName(txtName.text);
-
-            if (currentPlayer == player1)
-            {
-                currentPlayer = player2;
-            }
-            else if (currentPlayer == player2)
-            {
-                currentPlayer = player1;
-            }
-
-            this.GetComponent<GameManager>().CreatePlayer();
-
-            if (currentPlayer.getCharacterName() == null || currentPlayer.getCharacterName() == "")
-            {
-                inpPlaceholder.text = "";
-                txtPlaceholder.text = "Player 2 Name...";
-                txtName.text = "";
-            }
-
-            else
-            {
-                inpPlaceholder.text = currentPlayer.getCharacterName();
-                txtName.text = currentPlayer.getCharacterName();
-                txtPlaceholder.text = currentPlayer.getCharacterName();
-            }
-
-            
-            UpdateText();
-        }
+        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BROWSER);
     }
 }
