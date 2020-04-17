@@ -5,6 +5,7 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     private string characterName = "";
+    private string address = "";
     private int maxHealth = 5;
     private int currentHealth = 5;
     private int defenceLower = 2;
@@ -25,6 +26,7 @@ public class Character : MonoBehaviour
 
     private int points = 3;
     private int betPoints = 0;
+
 
     public string getCharacterName()
     {
@@ -215,9 +217,19 @@ public class Character : MonoBehaviour
         betPoints += change;
     }
 
+    public string getAddress()
+    {
+        return address;
+    }
+    public void setAddress(string newAddress)
+    {
+        address = newAddress;
+    }
+
     public void resetCharacter()
     {
         characterName = "";
+        address = "";
         maxHealth = 5;
         currentHealth = 5;
         defenceLower = 2;
@@ -238,6 +250,7 @@ public class Character : MonoBehaviour
 
         points = 0;
         betPoints = 0;
-    }
+
+}
 
 }

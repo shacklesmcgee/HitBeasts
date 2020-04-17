@@ -62,28 +62,29 @@ public class BettingManager : MonoBehaviour
 
     public void ConfirmBet()
     {
-        
 
-        if (currentPlayer == player1)
-        {
-            currentPlayer = player2;
-        }
-        else if (currentPlayer == player2)
-        {
-            currentPlayer = player1;
-        }
+        //this.GetComponent<NetworkManager>().SendBet(player2.getAddress(), player1.getBetPoints());
 
-        UpdateText();
+        //if (currentPlayer == player1)
+        //{
+        //    currentPlayer = player2;
+        //}
+        //else if (currentPlayer == player2)
+        //{
+        //    currentPlayer = player1;
+        //}
 
-        if (player1.getBetPoints() == player2.getBetPoints())
-        {
-            btnStartGame.interactable = true;
-        }
+        //UpdateText();
 
-        else
-        {
-            btnStartGame.interactable = false;
-        }
+        //if (player1.getBetPoints() == player2.getBetPoints())
+        //{
+        //    btnStartGame.interactable = true;
+        //}
+
+        //else
+        //{
+        //    btnStartGame.interactable = false;
+        //}
     }
 
     public void ShowScreen()

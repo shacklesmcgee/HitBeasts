@@ -11,7 +11,7 @@ public class NetworkManager : MonoBehaviour
     public UdpClient udp;
 
     public string myAddress;
-    public Dictionary<string, GameObject> currentPlayers;
+    //public Dictionary<string, GameObject> currentPlayers;
     public List<string> newPlayers, droppedPlayers;
     public GameState lastestGameState;
 
@@ -20,17 +20,26 @@ public class NetworkManager : MonoBehaviour
     private PlayerData receivedData;
     private List<PlayerData> readyPlayersList;
 
+    //Received from Network Player Login Variables
     private bool received;
     private bool loginSuccessful;
+
+    //Received from Network Player List
     private bool gotList;
     private bool listEmpty;
 
+    //Received from Network Players Joined
+    private bool playersJoined;
+    private bool joinSuccessful;
+
     private Character player1;
+    private Character player2;
 
     // Start is called before the first frame update
     void Start()
     {
         player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
+        player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
 
         received = false;
         loginSuccessful = false;
@@ -100,7 +109,8 @@ public class NetworkManager : MonoBehaviour
         PLAYER_DISCONNECTED,
         CONNECTION_APPROVED,
         LIST_OF_PLAYERS,
-        START_BETTING
+        JOIN_PLAYERS,
+        BETTING
     };
 
     void OnReceived(IAsyncResult result)
@@ -186,6 +196,35 @@ public class NetworkManager : MonoBehaviour
                     }
                     break;
 
+                case commands.JOIN_PLAYERS:
+                    Debug.Log("Joined Players!");
+                    lastestGameState = JsonUtility.FromJson<GameState>(returnData);
+                    receivedData = lastestGameState.players[0].playerData;
+
+                    if (receivedData.address == null || receivedData.address == "")
+                    {
+                        Debug.Log("Error: No address received!");
+                        joinSuccessful = false;
+                    }
+                    else
+                    {
+                        joinSuccessful = true;
+                    }
+
+                    playersJoined = true;
+                    break;
+
+                case commands.BETTING:
+                    Debug.Log("Betting!");
+                    lastestGameState = JsonUtility.FromJson<GameState>(returnData);
+                    //ListOfPlayers myPlayer = JsonUtility.FromJson<ListOfPlayers>(returnData);
+                    //foreach (Player player in myPlayer.players)
+                    //{
+                    //    newPlayers.Add(player.id);
+                    //    myAddress = player.id;
+                    //}
+                    break;
+
                 case commands.PLAYER_DISCONNECTED:
                     Debug.Log("Player Disconnected!");
                     //ListOfDroppedPlayers latestDroppedPlayer = JsonUtility.FromJson<ListOfDroppedPlayers>(returnData);
@@ -237,6 +276,7 @@ public class NetworkManager : MonoBehaviour
                 Character player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
                 player1.resetCharacter();
                 player1.setCharacterName(receivedData.user_id);
+                player1.setAddress(receivedData.address);
                 player1.setAttackLvl(receivedData.attackLvl);
                 player1.setDefenceLvl(receivedData.defenceLvl);
                 player1.setMaxHealthLvl(receivedData.healthLvl);
@@ -263,6 +303,24 @@ public class NetworkManager : MonoBehaviour
                 this.GetComponent<BrowserManager>().SetReadyPlayers(readyPlayersList);
             }
         }
+
+        if (playersJoined)
+        {
+            playersJoined = false;
+            if (joinSuccessful)
+            {
+                for (int x = 0; x < readyPlayersList.Count; x++)
+                {
+                    if (readyPlayersList[x].address == receivedData.address)
+                    {
+                        this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
+                        joinSuccessful = false;
+                        break;
+                    }
+                        
+                }
+
+        }
     }
 
     public void LoginPlayer(string name, string password)
@@ -279,9 +337,16 @@ public class NetworkManager : MonoBehaviour
         udp.Send(sendBytes, sendBytes.Length);
     }
 
-    public void StartBetting(string name)
+    public void JoinPlayers()
     {
-        string data = "bet," + name;
+        string data = "join," + player2.getAddress();
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+
+    }
+    public void SendBet(string address, int bet)
+    {
+        string data = "bet," + address + "," + bet;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }

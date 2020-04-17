@@ -56,6 +56,7 @@ public class BrowserManager : MonoBehaviour
 
         player2.resetCharacter();
         player2.setCharacterName(playerName);
+        player2.setAddress(tempData.address);
         player2.setAttackLvl(tempData.attackLvl);
         player2.setDefenceLvl(tempData.defenceLvl);
         player2.setMaxHealthLvl(tempData.healthLvl);
@@ -64,6 +65,8 @@ public class BrowserManager : MonoBehaviour
         player2.setPoints(-player2.getPoints());
         player2.setPoints(tempData.skillPoints);
 
-        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
+        this.GetComponent<NetworkManager>().JoinPlayers();
+
+        //this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
     }
 }
