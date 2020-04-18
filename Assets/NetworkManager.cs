@@ -87,8 +87,8 @@ public class NetworkManager : MonoBehaviour
         public int luckLvl;
         public int skillPoints;
 
-        public int betPoints;
-        public int currentHealth;
+        public int? betPoints;
+        public int? currentHealth;
 
     }
 
@@ -271,7 +271,7 @@ public class NetworkManager : MonoBehaviour
                     lastestGameState = JsonUtility.FromJson<GameState>(returnData);
                     receivedData = lastestGameState.players[0].playerData;
 
-                    if (receivedData.currentHealth == -1)
+                    if (receivedData.currentHealth == null)
                     {
                         Debug.Log("Error: No current health received!");
                         wasHealed = false;
@@ -390,7 +390,7 @@ public class NetworkManager : MonoBehaviour
                 if (this.GetComponent<GameManager>().player2.GetComponent<Character>().getAddress() == receivedData.address)
                 {
                     this.GetComponent<GameManager>().player2.GetComponent<Character>().setBetPoints(-this.GetComponent<GameManager>().player2.GetComponent<Character>().getBetPoints());
-                    this.GetComponent<GameManager>().player2.GetComponent<Character>().setBetPoints(receivedData.betPoints);
+                    this.GetComponent<GameManager>().player2.GetComponent<Character>().setBetPoints((int)receivedData.betPoints);
                     this.GetComponent<BettingManager>().UpdateText();
                     betSuccessful = false;
                 }
@@ -409,7 +409,7 @@ public class NetworkManager : MonoBehaviour
         {
             if (this.GetComponent<GameManager>().player1.GetComponent<Character>().getAddress() == receivedData.address)
             {
-                int healthDiff = player2.getCurrentHealth() - receivedData.currentHealth;
+                int healthDiff = (int)player2.getCurrentHealth() - (int)receivedData.currentHealth;
                 player2.changeCurrentHealth(healthDiff, true);
                 this.GetComponent<BattleManager>().DisableButtons();
                 this.GetComponent<BattleManager>().UpdateText();
@@ -418,7 +418,7 @@ public class NetworkManager : MonoBehaviour
             }
             else if (this.GetComponent<GameManager>().player2.GetComponent<Character>().getAddress() == receivedData.address)
             {
-                int healthDiff = player1.getCurrentHealth() - receivedData.currentHealth;
+                int healthDiff = (int)player1.getCurrentHealth() - (int)receivedData.currentHealth;
                 player1.changeCurrentHealth(healthDiff, true);
                 this.GetComponent<BattleManager>().EnableButtons();
                 this.GetComponent<BattleManager>().UpdateText();
@@ -433,7 +433,7 @@ public class NetworkManager : MonoBehaviour
         {
             if (this.GetComponent<GameManager>().player1.GetComponent<Character>().getAddress() == receivedData.address)
             {
-                int healthDiff = Math.Abs(player1.getCurrentHealth() - receivedData.currentHealth);
+                int healthDiff = Math.Abs((int)player1.getCurrentHealth() - (int)receivedData.currentHealth);
                 player1.changeCurrentHealth(healthDiff, false);
                 this.GetComponent<BattleManager>().DisableButtons();
                 this.GetComponent<BattleManager>().UpdateText();
@@ -442,7 +442,7 @@ public class NetworkManager : MonoBehaviour
             }
             else if (this.GetComponent<GameManager>().player2.GetComponent<Character>().getAddress() == receivedData.address)
             {
-                int healthDiff = player2.getCurrentHealth() - receivedData.currentHealth;
+                int healthDiff = (int)player2.getCurrentHealth() - (int)receivedData.currentHealth;
                 player2.changeCurrentHealth(healthDiff, true);
                 this.GetComponent<BattleManager>().EnableButtons();
                 this.GetComponent<BattleManager>().UpdateText();
@@ -483,6 +483,13 @@ public class NetworkManager : MonoBehaviour
         udp.Send(sendBytes, sendBytes.Length);
     }
 
+    public void UnjoinPlayers()
+    {
+        string data = "unjoin," + player2.getAddress();
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
     public void SendBet(int bet)
     {
         string data = "bet," + player2.getAddress() + "," + bet;
@@ -492,7 +499,7 @@ public class NetworkManager : MonoBehaviour
 
     public void StartBattle()
     {
-        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getCharacterName() + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCharacterName() + DateTime.Now.ToShortDateString() + DateTime.Now.ToShortTimeString();
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getCharacterName() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCharacterName() + "/" + DateTime.Now.ToShortDateString() + "/" + DateTime.Now.ToShortTimeString();
         string data = "startbattle," + player2.getAddress() + "," + temp;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
