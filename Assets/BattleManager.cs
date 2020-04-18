@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CombatManager : MonoBehaviour
+public class BattleManager : MonoBehaviour
 {
     Character activePlayer, waitingPlayer;
     Character player1, player2;

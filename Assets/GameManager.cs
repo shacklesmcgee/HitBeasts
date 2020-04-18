@@ -104,7 +104,7 @@ public class GameManager : MonoBehaviour
                 cnvsLevelUp.SetActive(false);
                 cnvsBrowser.SetActive(false);
                 cnvsBet.SetActive(false);
-                this.GetComponent<CombatManager>().ShowScreen();
+                this.GetComponent<BattleManager>().ShowScreen();
                 cnvsBattle.SetActive(true);
                 break;
         }

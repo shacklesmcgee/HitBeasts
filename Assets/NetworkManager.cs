@@ -91,7 +91,6 @@ public class NetworkManager : MonoBehaviour
     {
         public string id;
         public PlayerData playerData;
-        public PlayerData[] readyPlayers;
     }
 
     [Serializable]
@@ -115,7 +114,11 @@ public class NetworkManager : MonoBehaviour
         LIST_OF_PLAYERS,
         JOIN_PLAYERS,
         BETTING,
-        START_BATTLE
+        START_BATTLE,
+        ATTACK,
+        HEAL,
+        SPECIAL,
+        RUN
     };
 
     void OnReceived(IAsyncResult result)
@@ -403,6 +406,15 @@ public class NetworkManager : MonoBehaviour
     {
         string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getCharacterName() + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCharacterName() + DateTime.Now.ToShortDateString() + DateTime.Now.ToShortTimeString();
         string data = "startbattle," + player2.getAddress() + "," + temp;
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    public void Attack()
+    {
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttackLvl().ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getDefenceLvl().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getAttackLvl().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefenceLvl().ToString();
+
+        string data = "attack," + player2.getAddress() + "," + temp;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }
