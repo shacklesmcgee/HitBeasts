@@ -62,30 +62,6 @@ public class BettingManager : MonoBehaviour
 
     public void ConfirmBet()
     {
-
-        //this.GetComponent<NetworkManager>().SendBet(player2.getAddress(), player1.getBetPoints());
-
-        //if (currentPlayer == player1)
-        //{
-        //    currentPlayer = player2;
-        //}
-        //else if (currentPlayer == player2)
-        //{
-        //    currentPlayer = player1;
-        //}
-
-        //UpdateText();
-
-        //if (player1.getBetPoints() == player2.getBetPoints())
-        //{
-        //    btnStartGame.interactable = true;
-        //}
-
-        //else
-        //{
-        //    btnStartGame.interactable = false;
-        //}
-
         this.GetComponent<NetworkManager>().SendBet(player2.getAddress(), player1.getBetPoints());
     }
 
@@ -103,7 +79,7 @@ public class BettingManager : MonoBehaviour
         btnStartGame.interactable = false;
     }
 
-    void UpdateText()
+    public void UpdateText()
     {
         txtNames.text = "PLACE YOUR BETS " + currentPlayer.getCharacterName();
         txtPoints.text = "SKILL POINTS : " + currentPlayer.getPoints();

@@ -338,6 +338,7 @@ public class NetworkManager : MonoBehaviour
             {
                 player2.setBetPoints(-player2.getBetPoints());
                 player2.setBetPoints(receivedData.betPoints);
+                this.GetComponent<BettingManager>().UpdateText();
                 betSuccessful = false;
             }
         }
