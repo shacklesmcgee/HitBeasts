@@ -50,8 +50,8 @@ public class BattleManager : MonoBehaviour
     void Start()
     {
         btnAttack.onClick.AddListener(delegate { Attack(); });
-        btnHeal.onClick.AddListener(delegate { currentplayerAction = playerAction.HEAL; });
-        btnSpecial.onClick.AddListener(delegate { currentplayerAction = playerAction.SPECIAL; });
+        btnHeal.onClick.AddListener(delegate { Heal(); });
+        btnSpecial.onClick.AddListener(delegate { Special(); });
         btnRun.onClick.AddListener(delegate { currentplayerAction = playerAction.RUN; ; });
 
         player1 = GameObject.Find("Player1").GetComponent<Character>();
@@ -164,45 +164,47 @@ public class BattleManager : MonoBehaviour
         //currentplayerAction = playerAction.NULL;
     }
 
-    public void HealPlayer()
+    public void Heal()
     {
-        damageRange = activePlayer.getHeal();
-        attack = Random.Range(damageRange.Item1, damageRange.Item2);
+        this.GetComponent<NetworkManager>().Heal();
+        //damageRange = activePlayer.getHeal();
+        //attack = Random.Range(damageRange.Item1, damageRange.Item2);
 
-        activePlayer.changeCurrentHealth(attack, false);
-        
-        if (activePlayer.getCurrentHealth() >= activePlayer.getMaxHealth())
-        {
-            activePlayer.setCurrentHealth(activePlayer.getMaxHealth());
-        }
+        //activePlayer.changeCurrentHealth(attack, false);
 
-        txtConsole.text = activePlayer.getCharacterName() + " HEALS " + activePlayer.getCharacterName() + " FOR " + result + " HEALTH";
+        //if (activePlayer.getCurrentHealth() >= activePlayer.getMaxHealth())
+        //{
+        //    activePlayer.setCurrentHealth(activePlayer.getMaxHealth());
+        //}
 
-        UpdateText();
-        CheckBattleOver();
-        ChangeTurn();
+        //txtConsole.text = activePlayer.getCharacterName() + " HEALS " + activePlayer.getCharacterName() + " FOR " + result + " HEALTH";
 
-        currentplayerAction = playerAction.NULL;
+        //UpdateText();
+        //CheckBattleOver();
+        //ChangeTurn();
+
+        //currentplayerAction = playerAction.NULL;
     }
 
-    public void SpecialMove()
+    public void Special()
     {
-        damageRange = activePlayer.getSpecial();
-        attack = Random.Range(damageRange.Item1, damageRange.Item2);
+        this.GetComponent<NetworkManager>().Special();
+        //damageRange = activePlayer.getSpecial();
+        //attack = Random.Range(damageRange.Item1, damageRange.Item2);
 
-        defenceRange = activePlayer.getDefence();
-        defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
+        //defenceRange = activePlayer.getDefence();
+        //defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
 
-        result = ((attack - defence) > 0) ? (attack - defence) : 0;
-        waitingPlayer.changeCurrentHealth(result, true);
+        //result = ((attack - defence) > 0) ? (attack - defence) : 0;
+        //waitingPlayer.changeCurrentHealth(result, true);
 
-        txtConsole.text = activePlayer.getCharacterName() + " SPECIAL ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
+        //txtConsole.text = activePlayer.getCharacterName() + " SPECIAL ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
 
-        UpdateText();
-        CheckBattleOver();
-        ChangeTurn();
+        //UpdateText();
+        //CheckBattleOver();
+        //ChangeTurn();
 
-        currentplayerAction = playerAction.NULL;
+        //currentplayerAction = playerAction.NULL;
     }
 
     public void runFromBattle()
@@ -215,7 +217,7 @@ public class BattleManager : MonoBehaviour
 
     public void UpdateText()
     {
-        txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + "test" + " DAMAGE";
+        //txtConsole.text = activePlayer.getCharacterName() + " BLANKED " + waitingPlayer.getCharacterName() + " FOR " + "test" + " DAMAGE";
 
         btnAttack.GetComponentInChildren<Text>().text = "ATTACK " + activePlayer.getAttack().Item1 + " - " + activePlayer.getAttack().Item2;
         btnHeal.GetComponentInChildren<Text>().text = "HEAL " + activePlayer.getHeal();

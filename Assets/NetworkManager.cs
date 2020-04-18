@@ -37,6 +37,7 @@ public class NetworkManager : MonoBehaviour
 
     private bool startBattle;
     private bool wasAttacked;
+    private bool wasHealed;
 
     private Character player1;
     private Character player2;
@@ -52,6 +53,7 @@ public class NetworkManager : MonoBehaviour
         gotList = false;
         startBattle = false;
         wasAttacked = false;
+        wasHealed = false;
 
         readyPlayersList = new List<PlayerData>();
         udp = new UdpClient();
@@ -121,7 +123,6 @@ public class NetworkManager : MonoBehaviour
         START_BATTLE,
         ATTACK,
         HEAL,
-        SPECIAL,
         RUN
     };
 
@@ -262,6 +263,22 @@ public class NetworkManager : MonoBehaviour
                     else
                     {
                         wasAttacked = true;
+                    }
+                    break;
+
+                case commands.HEAL:
+                    Debug.Log("Was Healed!");
+                    lastestGameState = JsonUtility.FromJson<GameState>(returnData);
+                    receivedData = lastestGameState.players[0].playerData;
+
+                    if (receivedData.currentHealth == -1)
+                    {
+                        Debug.Log("Error: No current health received!");
+                        wasHealed = false;
+                    }
+                    else
+                    {
+                        wasHealed = true;
                     }
                     break;
 
@@ -411,6 +428,31 @@ public class NetworkManager : MonoBehaviour
 
             wasAttacked = false;
         }
+
+        if (wasHealed)
+        {
+            if (this.GetComponent<GameManager>().player1.GetComponent<Character>().getAddress() == receivedData.address)
+            {
+                int healthDiff = Math.Abs(player1.getCurrentHealth() - receivedData.currentHealth);
+                player1.changeCurrentHealth(healthDiff, false);
+                this.GetComponent<BattleManager>().DisableButtons();
+                this.GetComponent<BattleManager>().UpdateText();
+                this.GetComponent<BattleManager>().CheckBattleOver();
+                this.GetComponent<BattleManager>().ChangeTurn();
+            }
+            else if (this.GetComponent<GameManager>().player2.GetComponent<Character>().getAddress() == receivedData.address)
+            {
+                int healthDiff = player2.getCurrentHealth() - receivedData.currentHealth;
+                player2.changeCurrentHealth(healthDiff, true);
+                this.GetComponent<BattleManager>().EnableButtons();
+                this.GetComponent<BattleManager>().UpdateText();
+                this.GetComponent<BattleManager>().CheckBattleOver();
+                this.GetComponent<BattleManager>().ChangeTurn();
+            }
+
+            wasHealed = false;
+        }
+
     }
 
     public void LoginPlayer(string name, string password)
@@ -461,6 +503,33 @@ public class NetworkManager : MonoBehaviour
         string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item1.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item1.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item2.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCurrentHealth().ToString();
 
         string data = "attack," + player2.getAddress() + "," + temp;
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    public void Special()
+    {
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getSpecial().Item1.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getSpecial().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item1.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item2.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCurrentHealth().ToString();
+
+        string data = "special," + player2.getAddress() + "," + temp;
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    public void Heal()
+    {
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getHeal().Item1.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getHeal().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getCurrentHealth().ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getMaxHealth().ToString();
+
+        string data = "heal," + player2.getAddress() + "," + temp;
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    public void Run()
+    {
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getSpecial().Item1.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getSpecial().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item1.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item2.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCurrentHealth().ToString();
+
+        string data = "run," + player2.getAddress() + "," + temp;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }
