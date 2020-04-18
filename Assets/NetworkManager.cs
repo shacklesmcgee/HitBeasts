@@ -55,7 +55,7 @@ public class NetworkManager : MonoBehaviour
         startBattle = false;
         wasAttacked = false;
         wasHealed = false;
-        endBattle = true;
+        endBattle = false;
 
         readyPlayersList = new List<PlayerData>();
         udp = new UdpClient();
