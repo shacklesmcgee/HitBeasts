@@ -320,7 +320,10 @@ public class NetworkManager : MonoBehaviour
                 for (int x = 0; x < readyPlayersList.Count; x++)
                     if (readyPlayersList[x].address == receivedData.address)
                     {
-                        this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
+                        this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);                       
+                    }
+                    else if (player1.getAddress() == receivedData.address)
+                    {
                         this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
                     }
                 joinSuccessful = false;
@@ -367,8 +370,6 @@ public class NetworkManager : MonoBehaviour
         string data = "join," + player2.getAddress();
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
-
-        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
     }
     public void SendBet(string address, int bet)
     {
