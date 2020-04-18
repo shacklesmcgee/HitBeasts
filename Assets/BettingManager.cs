@@ -40,11 +40,11 @@ public class BettingManager : MonoBehaviour
 
     public void ChangeBet(int change)
     {
-        if ((change > 0 && currentPlayer.getPoints() > 0) ||
-            (change < 0 && currentPlayer.getBetPoints() > 0))
+        if ((change > 0 && player1.getPoints() > 0) ||
+            (change < 0 && player1.getBetPoints() > 0))
         {
-            currentPlayer.setBetPoints(change);
-            currentPlayer.setPoints(-change);
+            player1.setBetPoints(change);
+            player1.setPoints(-change);
 
             UpdateText();
         }
@@ -62,17 +62,13 @@ public class BettingManager : MonoBehaviour
 
     public void ConfirmBet()
     {
-        this.GetComponent<NetworkManager>().SendBet(player2.getAddress(), player1.getBetPoints());
+        this.GetComponent<NetworkManager>().SendBet(player1.getBetPoints());
     }
 
     public void ShowScreen()
     {
         player1 = this.GetComponent<GameManager>().player1.GetComponent<Character>();
         player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
-        currentPlayer = player1;
-
-        currentPlayer.setBetPoints(-currentPlayer.getBetPoints());
-        player2.setBetPoints(-player2.getBetPoints());
 
         UpdateText();
 
@@ -81,13 +77,13 @@ public class BettingManager : MonoBehaviour
 
     public void UpdateText()
     {
-        txtNames.text = "PLACE YOUR BETS " + currentPlayer.getCharacterName();
-        txtPoints.text = "SKILL POINTS : " + currentPlayer.getPoints();
-        txtBetPoints.text = "# OF SKILL POINTS TO BET : " + currentPlayer.getBetPoints();
+        txtNames.text = "PLACE YOUR BETS " + player1.getCharacterName();
+        txtPoints.text = "SKILL POINTS : " + player1.getPoints();
+        txtBetPoints.text = "# OF SKILL POINTS TO BET : " + player1.getBetPoints();
 
         txtPlayer1Bet.text = player1.getCharacterName() + " BETS : " + player1.getBetPoints();
         txtPlayer2Bet.text = player2.getCharacterName() + " BETS : " + player2.getBetPoints();
 
-        btnConfirmBet.GetComponentInChildren<Text>().text = currentPlayer.getCharacterName() + " CONFIRM YOUR BET";
+        btnConfirmBet.GetComponentInChildren<Text>().text = player1.getCharacterName() + " CONFIRM YOUR BET";
     }
 }

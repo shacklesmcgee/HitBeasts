@@ -318,28 +318,33 @@ public class NetworkManager : MonoBehaviour
             if (joinSuccessful)
             {
                 for (int x = 0; x < readyPlayersList.Count; x++)
+                {
                     if (readyPlayersList[x].address == receivedData.address)
                     {
-                        this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);                       
+                        this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
+                        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
                     }
                     else if (player1.getAddress() == receivedData.address)
                     {
                         this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
                     }
+                }
                 joinSuccessful = false;
             }
         }
 
         if (gotBet)
         {
-            Debug.Log("Player2 Address: " + player2.getAddress());
             gotBet = false;
-            if(betSuccessful)
+            if (betSuccessful)
             {
-                player2.setBetPoints(-player2.getBetPoints());
-                player2.setBetPoints(receivedData.betPoints);
-                this.GetComponent<BettingManager>().UpdateText();
-                betSuccessful = false;
+                if (player2.getAddress() == receivedData.address)
+                {
+                    player2.setBetPoints(-player2.getBetPoints());
+                    player2.setBetPoints(receivedData.betPoints);
+                    this.GetComponent<BettingManager>().UpdateText();
+                    betSuccessful = false;
+                }
             }
         }
     }
@@ -371,9 +376,9 @@ public class NetworkManager : MonoBehaviour
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }
-    public void SendBet(string address, int bet)
+    public void SendBet(int bet)
     {
-        string data = "bet," + address + "," + bet;
+        string data = "bet," + player2.getAddress() + "," + bet;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }
