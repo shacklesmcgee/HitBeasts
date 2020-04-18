@@ -388,11 +388,23 @@ public class NetworkManager : MonoBehaviour
 
         if (wasAttacked)
         {
-            int healthDiff = player2.getCurrentHealth() - receivedData.currentHealth;
-            player2.changeCurrentHealth(healthDiff, true);
-            this.GetComponent<BattleManager>().UpdateText();
-            this.GetComponent<BattleManager>().CheckBattleOver();
-            this.GetComponent<BattleManager>().ChangeTurn();
+            if (this.GetComponent<GameManager>().player1.GetComponent<Character>().getAddress() == receivedData.address)
+            {
+                int healthDiff = player2.getCurrentHealth() - receivedData.currentHealth;
+                player2.changeCurrentHealth(healthDiff, true);
+                this.GetComponent<BattleManager>().UpdateText();
+                this.GetComponent<BattleManager>().CheckBattleOver();
+                this.GetComponent<BattleManager>().ChangeTurn();
+            }
+            else if (this.GetComponent<GameManager>().player2.GetComponent<Character>().getAddress() == receivedData.address)
+            {
+                int healthDiff = player1.getCurrentHealth() - receivedData.currentHealth;
+                player1.changeCurrentHealth(healthDiff, true);
+                this.GetComponent<BattleManager>().UpdateText();
+                this.GetComponent<BattleManager>().CheckBattleOver();
+                this.GetComponent<BattleManager>().ChangeTurn();
+            }
+
             wasAttacked = false;
         }
     }
