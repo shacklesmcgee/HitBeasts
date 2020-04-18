@@ -32,6 +32,9 @@ public class NetworkManager : MonoBehaviour
     private bool playersJoined;
     private bool joinSuccessful;
 
+    private bool gotBet;
+    private bool betSuccessful;
+
     private Character player1;
     private Character player2;
 
@@ -77,6 +80,7 @@ public class NetworkManager : MonoBehaviour
         public int luckLvl;
         public int skillPoints;
 
+        public int betPoints;
     }
 
     [Serializable]
@@ -214,12 +218,19 @@ public class NetworkManager : MonoBehaviour
                 case commands.BETTING:
                     Debug.Log("Betting!");
                     lastestGameState = JsonUtility.FromJson<GameState>(returnData);
-                    //ListOfPlayers myPlayer = JsonUtility.FromJson<ListOfPlayers>(returnData);
-                    //foreach (Player player in myPlayer.players)
-                    //{
-                    //    newPlayers.Add(player.id);
-                    //    myAddress = player.id;
-                    //}
+                    receivedData = lastestGameState.players[0].playerData;
+
+                    if (receivedData.betPoints == -1)
+                    {
+                        Debug.Log("Error: No address received!");
+                        betSuccessful = false;
+                    }
+                    else
+                    {
+                        betSuccessful = true;
+                    }
+
+                    gotBet = true;
                     break;
 
                 case commands.PLAYER_DISCONNECTED:
@@ -318,7 +329,17 @@ public class NetworkManager : MonoBehaviour
 
                 }
             }
+        }
 
+        if (gotBet)
+        {
+            gotBet = false;
+            if(betSuccessful)
+            {
+                player2.setBetPoints(-player2.getBetPoints());
+                player2.setBetPoints(receivedData.betPoints);
+                betSuccessful = false;
+            }
         }
     }
 

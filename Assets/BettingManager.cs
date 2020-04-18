@@ -85,6 +85,8 @@ public class BettingManager : MonoBehaviour
         //{
         //    btnStartGame.interactable = false;
         //}
+
+        this.GetComponent<NetworkManager>().SendBet(player2.getAddress(), player1.getBetPoints());
     }
 
     public void ShowScreen()
