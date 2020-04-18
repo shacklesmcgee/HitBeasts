@@ -379,6 +379,7 @@ public class NetworkManager : MonoBehaviour
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
 
+        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
     }
     public void SendBet(string address, int bet)
     {
