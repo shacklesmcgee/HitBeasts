@@ -36,6 +36,7 @@ public class NetworkManager : MonoBehaviour
     private bool betSuccessful;
 
     private bool startBattle;
+    private bool endBattle;
     private bool wasAttacked;
     private bool wasHealed;
 
@@ -54,6 +55,7 @@ public class NetworkManager : MonoBehaviour
         startBattle = false;
         wasAttacked = false;
         wasHealed = false;
+        endBattle = true;
 
         readyPlayersList = new List<PlayerData>();
         udp = new UdpClient();
@@ -121,6 +123,7 @@ public class NetworkManager : MonoBehaviour
         JOIN_PLAYERS,
         BETTING,
         START_BATTLE,
+        END_BATTLE,
         ATTACK,
         HEAL,
         RUN
@@ -248,6 +251,11 @@ public class NetworkManager : MonoBehaviour
                 case commands.START_BATTLE:
                     Debug.Log("Starting Battle!");
                     startBattle = true;            
+                    break;
+
+                case commands.END_BATTLE:
+                    Debug.Log("Starting Battle!");
+                    endBattle = true;
                     break;
 
                 case commands.ATTACK:
@@ -405,6 +413,14 @@ public class NetworkManager : MonoBehaviour
             startBattle = false;
         }
 
+        if (endBattle)
+        {
+            this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.LEVELUP);
+            readyPlayersList.Clear();
+            this.GetComponent<GameManager>().player2.GetComponent<Character>().resetCharacter();
+            endBattle = false;
+        }
+
         if (wasAttacked)
         {
             if (this.GetComponent<GameManager>().player1.GetComponent<Character>().getAddress() == receivedData.address)
@@ -501,6 +517,29 @@ public class NetworkManager : MonoBehaviour
     {
         string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getCharacterName() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCharacterName() + "/" + DateTime.Now.ToShortDateString() + "/" + DateTime.Now.ToShortTimeString();
         string data = "startbattle," + player2.getAddress() + "," + temp;
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    public void EndBattle()
+    {
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getCharacterName() + "/" +
+                      this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttackLvl() + "/" +
+                      this.GetComponent<GameManager>().player1.GetComponent<Character>().getDefenceLvl() + "/" +
+                      this.GetComponent<GameManager>().player1.GetComponent<Character>().getMaxHealthLvl() + "/" +
+                      this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuckLvl() + "/" +
+                      this.GetComponent<GameManager>().player1.GetComponent<Character>().getPoints() + "/" +
+                      this.GetComponent<GameManager>().player1.GetComponent<Character>().getSpecialLvl() + "/" +
+
+                      this.GetComponent<GameManager>().player2.GetComponent<Character>().getCharacterName() + "/" +
+                      this.GetComponent<GameManager>().player2.GetComponent<Character>().getAttackLvl() + "/" +
+                      this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefenceLvl() + "/" +
+                      this.GetComponent<GameManager>().player2.GetComponent<Character>().getMaxHealthLvl() + "/" +
+                      this.GetComponent<GameManager>().player2.GetComponent<Character>().getLuckLvl() + "/" +
+                      this.GetComponent<GameManager>().player2.GetComponent<Character>().getPoints() + "/" +
+                      this.GetComponent<GameManager>().player2.GetComponent<Character>().getSpecialLvl();
+
+        string data = "endbattle," + player2.getAddress() + "," + temp;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }
