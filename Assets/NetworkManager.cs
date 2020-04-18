@@ -197,8 +197,11 @@ public class NetworkManager : MonoBehaviour
                     }
                     break;
 
-                case commands.JOIN_PLAYERS:
+                case commands.JOIN_PLAYERS:      
                     Debug.Log("Joined Players!");
+                    if (player2.getAddress() != null || player2.getAddress() != "")
+                        break;
+
                     lastestGameState = JsonUtility.FromJson<GameState>(returnData);
                     receivedData = lastestGameState.players[0].playerData;
 
