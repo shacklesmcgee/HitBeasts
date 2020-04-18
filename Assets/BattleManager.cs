@@ -49,7 +49,7 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
-        btnAttack.onClick.AddListener(delegate { currentplayerAction = playerAction.ATTACK; });
+        btnAttack.onClick.AddListener(delegate { Attack(); });
         btnHeal.onClick.AddListener(delegate { currentplayerAction = playerAction.HEAL; });
         btnSpecial.onClick.AddListener(delegate { currentplayerAction = playerAction.SPECIAL; });
         btnRun.onClick.AddListener(delegate { currentplayerAction = playerAction.RUN; ; });
@@ -100,55 +100,57 @@ public class BattleManager : MonoBehaviour
     // In multiplayer this will trigger on received value from the player, not every tick.
     void Update()
     {
-        if (activePlayer != null) //if player ID matches the turn cycle, process input
-        {
-            //read the message for the player action
+        //if (activePlayer != null) //if player ID matches the turn cycle, process input
+        //{
+        //    //read the message for the player action
 
-            switch (currentplayerAction)
-            {
-                case playerAction.ATTACK:
-                    AttackEnemy();
-                    break;
+        //    switch (currentplayerAction)
+        //    {
+        //        case playerAction.ATTACK:
+        //            AttackEnemy();
+        //            break;
 
-                case playerAction.HEAL:
-                    HealPlayer();
-                    break;
+        //        case playerAction.HEAL:
+        //            HealPlayer();
+        //            break;
 
-                case playerAction.SPECIAL:
-                    SpecialMove();
-                    break;
-                case playerAction.DEFEND:
-                    //do something
-                    currentplayerAction = playerAction.NULL;
-                    break;
-                case playerAction.RUN:
-                    runFromBattle();
-                    break;
-                case playerAction.NULL:
-                    break;
+        //        case playerAction.SPECIAL:
+        //            SpecialMove();
+        //            break;
+        //        case playerAction.DEFEND:
+        //            //do something
+        //            currentplayerAction = playerAction.NULL;
+        //            break;
+        //        case playerAction.RUN:
+        //            runFromBattle();
+        //            break;
+        //        case playerAction.NULL:
+        //            break;
           
-            }
-        }
+        //    }
+        //}
     }
 
-    public void AttackEnemy()
+    public void Attack()
     {
-        damageRange = activePlayer.getAttack();
-        attack = Random.Range(damageRange.Item1, damageRange.Item2);
+        this.GetComponent<NetworkManager>().Attack();
 
-        defenceRange = activePlayer.getDefence();
-        defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
+        //damageRange = activePlayer.getAttack();
+        //attack = Random.Range(damageRange.Item1, damageRange.Item2);
 
-        result = ((attack - defence) > 0) ? (attack - defence) : 0;
-        waitingPlayer.changeCurrentHealth(result, true);
+        //defenceRange = activePlayer.getDefence();
+        //defence = Random.Range(defenceRange.Item1, defenceRange.Item2);
 
-        txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
+        //result = ((attack - defence) > 0) ? (attack - defence) : 0;
+        //waitingPlayer.changeCurrentHealth(result, true);
 
-        UpdateText();
-        CheckBattleOver();
-        ChangeTurn();
+        //txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
 
-        currentplayerAction = playerAction.NULL;
+        //UpdateText();
+        //CheckBattleOver();
+        //ChangeTurn();
+
+        //currentplayerAction = playerAction.NULL;
     }
 
     public void HealPlayer()
