@@ -199,9 +199,6 @@ public class NetworkManager : MonoBehaviour
 
                 case commands.JOIN_PLAYERS:      
                     Debug.Log("Joined Players!");
-                    if (player2.getAddress() != null || player2.getAddress() != "")
-                        break;
-
                     lastestGameState = JsonUtility.FromJson<GameState>(returnData);
                     receivedData = lastestGameState.players[0].playerData;
 
@@ -324,10 +321,18 @@ public class NetworkManager : MonoBehaviour
                 {
                     if (readyPlayersList[x].address == receivedData.address)
                     {
-                        this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
-                        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
-                        joinSuccessful = false;
-                        break;
+                        if (player2.getAddress() == null || player2.getAddress() == "")
+                        {
+                            this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
+                            this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
+                            joinSuccessful = false;
+                            break;
+                        }
+                        else
+                        {
+                            this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
+                            break;
+                        }
                     }
 
                 }
