@@ -263,7 +263,7 @@ public class NetworkManager : MonoBehaviour
                     lastestGameState = JsonUtility.FromJson<GameState>(returnData);
                     receivedData = lastestGameState.players[0].playerData;
 
-                    if (receivedData.currentHealth == -1)
+                    if (receivedData.currentHealth == -1000)
                     {
                         Debug.Log("Error: No current health received!");
                         wasAttacked = false;
