@@ -338,10 +338,10 @@ public class NetworkManager : MonoBehaviour
             gotBet = false;
             if (betSuccessful)
             {
-                if (player2.getAddress() == receivedData.address)
+                if (this.GetComponent<GameManager>().player2.GetComponent<Character>().getAddress() == receivedData.address)
                 {
-                    player2.setBetPoints(-player2.getBetPoints());
-                    player2.setBetPoints(receivedData.betPoints);
+                    this.GetComponent<GameManager>().player2.GetComponent<Character>().setBetPoints(-this.GetComponent<GameManager>().player2.GetComponent<Character>().getBetPoints());
+                    this.GetComponent<GameManager>().player2.GetComponent<Character>().setBetPoints(receivedData.betPoints);
                     this.GetComponent<BettingManager>().UpdateText();
                     betSuccessful = false;
                 }

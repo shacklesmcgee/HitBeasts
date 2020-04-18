@@ -54,16 +54,16 @@ public class BrowserManager : MonoBehaviour
         Character player2 = this.GetComponent<GameManager>().player2.GetComponent<Character>();
         NetworkManager.PlayerData tempData = readyPlayersDict[playerName];
 
-        player2.resetCharacter();
-        player2.setCharacterName(playerName);
-        player2.setAddress(tempData.address);
-        player2.setAttackLvl(tempData.attackLvl);
-        player2.setDefenceLvl(tempData.defenceLvl);
-        player2.setMaxHealthLvl(tempData.healthLvl);
-        player2.setSpecialLvl(tempData.specialLvl);
-        player2.setLuckLvl(tempData.luckLvl);
-        player2.setPoints(-player2.getPoints());
-        player2.setPoints(tempData.skillPoints);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().resetCharacter();
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setCharacterName(playerName);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setAddress(tempData.address);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setAttackLvl(tempData.attackLvl);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setDefenceLvl(tempData.defenceLvl);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setMaxHealthLvl(tempData.healthLvl);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setSpecialLvl(tempData.specialLvl);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setLuckLvl(tempData.luckLvl);
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setPoints(-player2.getPoints());
+        this.GetComponent<GameManager>().player2.GetComponent<Character>().setPoints(tempData.skillPoints);
 
         
 
