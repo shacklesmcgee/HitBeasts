@@ -36,6 +36,7 @@ public class NetworkManager : MonoBehaviour
     private bool betSuccessful;
 
     private bool startBattle;
+    private bool wasAttacked;
 
     private Character player1;
     private Character player2;
@@ -50,6 +51,7 @@ public class NetworkManager : MonoBehaviour
         loginSuccessful = false;
         gotList = false;
         startBattle = false;
+        wasAttacked = false;
 
         readyPlayersList = new List<PlayerData>();
         udp = new UdpClient();
@@ -84,6 +86,8 @@ public class NetworkManager : MonoBehaviour
         public int skillPoints;
 
         public int betPoints;
+        public int currentHealth;
+
     }
 
     [Serializable]
@@ -245,6 +249,22 @@ public class NetworkManager : MonoBehaviour
                     startBattle = true;
                     break;
 
+                case commands.ATTACK:
+                    Debug.Log("Was Attacked!");
+                    lastestGameState = JsonUtility.FromJson<GameState>(returnData);
+                    receivedData = lastestGameState.players[0].playerData;
+
+                    if (receivedData.currentHealth == -1)
+                    {
+                        Debug.Log("Error: No current health received!");
+                        wasAttacked = false;
+                    }
+                    else
+                    {
+                        wasAttacked = true;
+                    }
+                    break;
+
                 case commands.PLAYER_DISCONNECTED:
                     Debug.Log("Player Disconnected!");
                     //ListOfDroppedPlayers latestDroppedPlayer = JsonUtility.FromJson<ListOfDroppedPlayers>(returnData);
@@ -365,6 +385,16 @@ public class NetworkManager : MonoBehaviour
             this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BATTLE);
             startBattle = false;
         }
+
+        if (wasAttacked)
+        {
+            int healthDiff = player2.getCurrentHealth() - receivedData.currentHealth;
+            player2.changeCurrentHealth(healthDiff, true);
+            this.GetComponent<BattleManager>().UpdateText();
+            this.GetComponent<BattleManager>().CheckBattleOver();
+            this.GetComponent<BattleManager>().ChangeTurn();
+            wasAttacked = false;
+        }
     }
 
     public void LoginPlayer(string name, string password)
@@ -412,7 +442,7 @@ public class NetworkManager : MonoBehaviour
 
     public void Attack()
     {
-        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item1.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item1.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getCurrentHealth().ToString();
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item1.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item1.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item2.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCurrentHealth().ToString();
 
         string data = "attack," + player2.getAddress() + "," + temp;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
