@@ -383,6 +383,7 @@ public class NetworkManager : MonoBehaviour
         if (startBattle)
         {
             this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BATTLE);
+            this.GetComponent<BattleManager>().ChangeTurn();
             this.GetComponent<BattleManager>().DisableButtons();
             startBattle = false;
         }
