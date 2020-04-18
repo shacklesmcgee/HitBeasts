@@ -42,6 +42,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+    public void StartBattle()
+    {
+        this.GetComponent<NetworkManager>().StartBattle();
+        ChangeScene(currentScene.BATTLE);
+    }
+
     public void CreatePlayer()
     {
         playersCreated++;

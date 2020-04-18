@@ -29,7 +29,7 @@ public class BettingManager : MonoBehaviour
         btnBetUp.onClick.AddListener(delegate { ChangeBet(1); });
         btnBetDown.onClick.AddListener(delegate { ChangeBet(-1); });
         btnConfirmBet.onClick.AddListener(delegate { ConfirmBet(); });
-        btnStartGame.onClick.AddListener(delegate { this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BATTLE); });
+        btnStartGame.onClick.AddListener(delegate { this.GetComponent<GameManager>().StartBattle(); });
     }
 
     // Update is called once per frame

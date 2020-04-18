@@ -35,6 +35,8 @@ public class NetworkManager : MonoBehaviour
     private bool gotBet;
     private bool betSuccessful;
 
+    private bool startBattle;
+
     private Character player1;
     private Character player2;
 
@@ -47,6 +49,7 @@ public class NetworkManager : MonoBehaviour
         received = false;
         loginSuccessful = false;
         gotList = false;
+        startBattle = false;
 
         readyPlayersList = new List<PlayerData>();
         udp = new UdpClient();
@@ -111,7 +114,8 @@ public class NetworkManager : MonoBehaviour
         CONNECTION_APPROVED,
         LIST_OF_PLAYERS,
         JOIN_PLAYERS,
-        BETTING
+        BETTING,
+        START_BATTLE
     };
 
     void OnReceived(IAsyncResult result)
@@ -233,6 +237,11 @@ public class NetworkManager : MonoBehaviour
                     gotBet = true;
                     break;
 
+                case commands.START_BATTLE:
+                    Debug.Log("Starting Battle!");
+                    startBattle = true;
+                    break;
+
                 case commands.PLAYER_DISCONNECTED:
                     Debug.Log("Player Disconnected!");
                     //ListOfDroppedPlayers latestDroppedPlayer = JsonUtility.FromJson<ListOfDroppedPlayers>(returnData);
@@ -347,6 +356,12 @@ public class NetworkManager : MonoBehaviour
                 }
             }
         }
+
+        if (startBattle)
+        {
+            this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BATTLE);
+            startBattle = false;
+        }
     }
 
     public void LoginPlayer(string name, string password)
@@ -376,9 +391,18 @@ public class NetworkManager : MonoBehaviour
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }
+
     public void SendBet(int bet)
     {
         string data = "bet," + player2.getAddress() + "," + bet;
+        Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
+        udp.Send(sendBytes, sendBytes.Length);
+    }
+
+    public void StartBattle()
+    {
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getCharacterName() + this.GetComponent<GameManager>().player2.GetComponent<Character>().getCharacterName() + DateTime.Now.ToShortDateString() + DateTime.Now.ToShortTimeString();
+        string data = "startbattle," + player2.getAddress() + "," + temp;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
         udp.Send(sendBytes, sendBytes.Length);
     }
