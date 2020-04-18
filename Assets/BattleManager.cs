@@ -65,17 +65,28 @@ public class BattleManager : MonoBehaviour
         player1.setCurrentHealth(player1.getMaxHealth());
         player2.setCurrentHealth(player2.getMaxHealth());
 
-
-        btnAttack.interactable = true;
-        btnHeal.interactable = true;
-        btnSpecial.interactable = true;
-        btnRun.interactable = true;
-
+        EnableButtons();
         //get Player IDs, create PlayerStructs (player stats and pointBet) randomly assign one to go first
         //turnNum = Random.Range(1, 2);
         turnNum = 1;
         ChangeTurn();
         UpdateText();
+    }
+
+    public void DisableButtons()
+    {
+        btnAttack.interactable = false;
+        btnHeal.interactable = false;
+        btnSpecial.interactable = false;
+        btnRun.interactable = false;
+    }
+
+    public void EnableButtons()
+    {
+        btnAttack.interactable = true;
+        btnHeal.interactable = true;
+        btnSpecial.interactable = true;
+        btnRun.interactable = true;
     }
 
     public void ChangeTurn()
@@ -144,7 +155,7 @@ public class BattleManager : MonoBehaviour
         //result = ((attack - defence) > 0) ? (attack - defence) : 0;
         //waitingPlayer.changeCurrentHealth(result, true);
 
-        //txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + result + " DAMAGE";
+       
 
         //UpdateText();
         //CheckBattleOver();
@@ -204,6 +215,8 @@ public class BattleManager : MonoBehaviour
 
     public void UpdateText()
     {
+        txtConsole.text = activePlayer.getCharacterName() + " ATTACKS " + waitingPlayer.getCharacterName() + " FOR " + "test" + " DAMAGE";
+
         btnAttack.GetComponentInChildren<Text>().text = "ATTACK " + activePlayer.getAttack().Item1 + " - " + activePlayer.getAttack().Item2;
         btnHeal.GetComponentInChildren<Text>().text = "HEAL " + activePlayer.getHeal();
         btnSpecial.GetComponentInChildren<Text>().text = "SPECIAL " + activePlayer.getSpecial().Item1 + " - " + activePlayer.getSpecial().Item2;

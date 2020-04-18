@@ -246,7 +246,7 @@ public class NetworkManager : MonoBehaviour
 
                 case commands.START_BATTLE:
                     Debug.Log("Starting Battle!");
-                    startBattle = true;
+                    startBattle = true;            
                     break;
 
                 case commands.ATTACK:
@@ -383,6 +383,7 @@ public class NetworkManager : MonoBehaviour
         if (startBattle)
         {
             this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BATTLE);
+            this.GetComponent<BattleManager>().DisableButtons();
             startBattle = false;
         }
 
@@ -392,6 +393,7 @@ public class NetworkManager : MonoBehaviour
             {
                 int healthDiff = player2.getCurrentHealth() - receivedData.currentHealth;
                 player2.changeCurrentHealth(healthDiff, true);
+                this.GetComponent<BattleManager>().DisableButtons();
                 this.GetComponent<BattleManager>().UpdateText();
                 this.GetComponent<BattleManager>().CheckBattleOver();
                 this.GetComponent<BattleManager>().ChangeTurn();
@@ -400,6 +402,7 @@ public class NetworkManager : MonoBehaviour
             {
                 int healthDiff = player1.getCurrentHealth() - receivedData.currentHealth;
                 player1.changeCurrentHealth(healthDiff, true);
+                this.GetComponent<BattleManager>().EnableButtons();
                 this.GetComponent<BattleManager>().UpdateText();
                 this.GetComponent<BattleManager>().CheckBattleOver();
                 this.GetComponent<BattleManager>().ChangeTurn();
