@@ -276,6 +276,7 @@ public class NetworkManager : MonoBehaviour
     {
         if (received)
         {
+            Debug.Log("Player2 Address: " + player2.getAddress());
             received = false;
             this.GetComponent<LoginManager>().SetConsoleText(receivedData.user_id);
             
@@ -299,6 +300,7 @@ public class NetworkManager : MonoBehaviour
 
         if (gotList)
         {
+            Debug.Log("Player2 Address: " + player2.getAddress());
             gotList = false;
             if (listEmpty)
             {
@@ -314,6 +316,7 @@ public class NetworkManager : MonoBehaviour
 
         if (playersJoined)
         {
+            Debug.Log("Player2 Address: " + player2.getAddress());
             playersJoined = false;
             if (joinSuccessful)
             {
@@ -325,6 +328,7 @@ public class NetworkManager : MonoBehaviour
 
         if (gotBet)
         {
+            Debug.Log("Player2 Address: " + player2.getAddress());
             gotBet = false;
             if(betSuccessful)
             {
