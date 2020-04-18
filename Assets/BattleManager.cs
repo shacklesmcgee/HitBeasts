@@ -54,10 +54,16 @@ public class BattleManager : MonoBehaviour
         btnSpecial.onClick.AddListener(delegate { Special(); });
         btnRun.onClick.AddListener(delegate { currentplayerAction = playerAction.RUN; ; });
 
+        btnExit.onClick.AddListener(delegate { EndBattle(); });
+
         player1 = GameObject.Find("Player1").GetComponent<Character>();
         player2 = GameObject.Find("Player2").GetComponent<Character>();
     }
 
+    public void EndBattle()
+    {
+        this.GetComponent<NetworkManager>().EndBattle();
+    }
     public void ShowScreen()
     {
         cnvs_BattleResults.SetActive(false);
@@ -242,7 +248,6 @@ public class BattleManager : MonoBehaviour
                 " AND WINS " + rewardPoints + " FROM BATTLE AND " + (activePlayer.getBetPoints() + waitingPlayer.getBetPoints()) + " FROM BETS";
 
             activePlayer.setPoints(rewardPoints + (activePlayer.getBetPoints() + waitingPlayer.getBetPoints()));
-            btnExit.onClick.AddListener(delegate { this.GetComponent<NetworkManager>().EndBattle(); });
 
             btnAttack.interactable = false;
             btnHeal.interactable = false;
@@ -262,7 +267,6 @@ public class BattleManager : MonoBehaviour
                 " AND WINS " + rewardPoints + " SKILL POINTS";
 
             waitingPlayer.setPoints(rewardPoints + (activePlayer.getBetPoints() + waitingPlayer.getBetPoints()));
-            btnExit.onClick.AddListener(delegate { this.GetComponent<NetworkManager>().EndBattle(); });
 
             btnAttack.interactable = false;
             btnHeal.interactable = false;
