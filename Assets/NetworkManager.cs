@@ -412,7 +412,7 @@ public class NetworkManager : MonoBehaviour
 
     public void Attack()
     {
-        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttackLvl().ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getDefenceLvl().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getAttackLvl().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefenceLvl().ToString();
+        string temp = this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item1.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getAttack().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item1.ToString() + "/" + this.GetComponent<GameManager>().player2.GetComponent<Character>().getDefence().Item2.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getLuck().Item.ToString() + "/" + this.GetComponent<GameManager>().player1.GetComponent<Character>().getCurrentHealth().ToString();
 
         string data = "attack," + player2.getAddress() + "," + temp;
         Byte[] sendBytes = Encoding.ASCII.GetBytes(data);
