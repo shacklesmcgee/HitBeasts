@@ -9,7 +9,8 @@ public class BrowserManager : MonoBehaviour
     public GameObject boxContent;
 
     public Text txtConsole;
-    public GameObject defaultBtn;
+    public GameObject btnDefault;
+    public Button btnRefresh;
 
     private Dictionary<string, NetworkManager.PlayerData> readyPlayersDict;
 
@@ -17,15 +18,20 @@ public class BrowserManager : MonoBehaviour
     void Start()
     {
         readyPlayersDict = new Dictionary<string, NetworkManager.PlayerData>();
+
+        btnRefresh.onClick.AddListener(delegate { RefreshPlayersList(); });
+
     }
 
     public void ShowScreen()
     {
-        this.GetComponent<NetworkManager>().GetReadyPlayers();
-
-
+        RefreshPlayersList();
     }
 
+    public void RefreshPlayersList()
+    {
+        this.GetComponent<NetworkManager>().GetReadyPlayers();
+    }
     // Update is called once per frame
     void Update()
     {
@@ -42,7 +48,7 @@ public class BrowserManager : MonoBehaviour
         for (int x = 0; x < readyPlayers.Count; x++)
         {
             readyPlayersDict.Add(readyPlayers[x].user_id, readyPlayers[x]);
-            GameObject btnNew = Instantiate(defaultBtn) as GameObject;
+            GameObject btnNew = Instantiate(btnDefault) as GameObject;
             btnNew.transform.SetParent(boxContent.transform, false);
             btnNew.GetComponentInChildren<Text>().text = readyPlayers[x].user_id;
             btnNew.GetComponent<Button>().onClick.AddListener(delegate { SetPlayer2(btnNew.GetComponentInChildren<Text>().text); this.GetComponent<NetworkManager>().JoinPlayers(); });
