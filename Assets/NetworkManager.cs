@@ -317,25 +317,9 @@ public class NetworkManager : MonoBehaviour
             playersJoined = false;
             if (joinSuccessful)
             {
-                for (int x = 0; x < readyPlayersList.Count; x++)
-                {
-                    if (readyPlayersList[x].address == receivedData.address)
-                    {
-                        if (player2.getAddress() == null || player2.getAddress() == "")
-                        {
-                            this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
-                            this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
-                            joinSuccessful = false;
-                            break;
-                        }
-                        else
-                        {
-                            this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
-                            break;
-                        }
-                    }
-
-                }
+                this.GetComponent<BrowserManager>().SetPlayer2(receivedData.address);
+                this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
+                joinSuccessful = false;
             }
         }
 
