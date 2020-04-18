@@ -314,16 +314,15 @@ public class NetworkManager : MonoBehaviour
 
         if (playersJoined)
         {
-
-            Debug.Log("ReceivedData is:" + receivedData.address);
-            Debug.Log("Player1 Address: " + player1.getAddress());
-            Debug.Log("Player2 Address: " + player2.getAddress());
-
             playersJoined = false;
             if (joinSuccessful)
             {
-                this.GetComponent<BrowserManager>().SetPlayer2(receivedData.address);
-                this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
+                for (int x = 0; x < readyPlayersList.Count; x++)
+                    if (readyPlayersList[x].address == receivedData.address)
+                    {
+                        this.GetComponent<BrowserManager>().SetPlayer2(readyPlayersList[x].user_id);
+                        this.GetComponent<GameManager>().ChangeScene(GameManager.currentScene.BET);
+                    }
                 joinSuccessful = false;
             }
         }
